@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    Emergency System Portal</title>
+
+    <!-- GLOBAL CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+
+<body>
+
+    <!-- ========================= NAVBAR ========================= -->
+    <nav class="navbar" id="navbar">
+
+        <div class="logo">
+            <h2><i class="fa-solid fa-heart-pulse"></i> LifeLink</h2>
+        </div>
+
+        <ul class="nav-links">
+    <li>
+        <a href="{{ url_for('login') }}" class="primary-btn">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Login
+        </a>
+    </li>
+</ul>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+    </nav>
+
+
+    <!-- ========================= HERO SECTION ========================= -->
+    <section class="hero" id="home">
+
+        <div class="hero-content">
+
+            <span class="hero-badge">
+                <i class="fa-solid fa-circle-dot pulse-dot"></i>
+                AI Emergency Healthcare Platform
+            </span>
+
+            <h1>
+                AI-Based Emergency Victim
+                <span class="highlight">Identification</span> &
+                Smart Medical Response System
+            </h1>
+               <p>
+        LifeLink is an AI-powered emergency response system
+        designed to help police officers and ambulance staff
+        securely identify accident victims and access temporary
+        emergency medical information during critical situations.
+</p>
+        
+
+        <div class="hero-buttons">
+
+            <a href="{{ url_for('register') }}" class="secondary-btn">
+                <i class="fa-solid fa-user-plus"></i>
+                Citizen Registration
+            </a>
+
+            <a href="{{ url_for('updatedrecords') }}" class="secondary-btn">
+                <i class="fa-solid fa-file-medical"></i>
+                Update Medical Record
+            </a>
+
+            <a href="{{ url_for('login') }}" class="primary-btn">
+                <i class="fa-solid fa-shield-halved"></i>
+                Emergency Login
+            </a>
+
+        </div>
+
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-card">
+                <span class="stat-number" data-target="98">0</span><span>%</span>
+                <p>ID Accuracy</p>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" data-target="3">0</span><span>s</span>
+                <p>Avg Response</p>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" data-target="500">0</span><span>+</span>
+                <p>Responders</p>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" data-target="24">0</span><span>/7</span>
+                <p>Monitoring</p>
+            </div>
+        </div>
+
+    </section>
+
+
+
+
+
+    <!-- ========================= FOOTER ========================= -->
+    <footer class="footer">
+
+    <h3>LifeLink Emergency System</h3>
+
+</footer>
+
+    <!-- ========================= SCROLL TO TOP ========================= -->
+    <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+        <i class="fa-solid fa-chevron-up"></i>
+    </button>
+
+
+    <!-- ========================= JS ========================= -->
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+</body>
+
+</html>

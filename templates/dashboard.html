@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0" />
+
+    <title>LifeLink Dashboard</title>
+
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <h2>LifeLink</h2>
+            </div>
+
+            <ul class="menu">
+
+                <li class="active">
+                    <a href="#">
+                        <i class="fa-solid fa-table-columns"></i>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('victim') }}">
+                        <i class="fa-solid fa-user"></i>
+                        Victim Identification
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                        Emergency Access
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('gps') }}">
+                        <i class="fa-solid fa-location-dot"></i>
+                        GPS Tracking
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('authority') }}">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Authority Monitoring
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                    </a>
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- Main Content -->
+
+        <main class="main-content">
+
+            <!-- Top Navbar -->
+
+            <div class="topbar">
+
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        placeholder="Search emergency cases..."
+                    />
+
+                </div>
+
+                <div class="profile">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                    <span>Police Officer</span>
+
+                </div>
+
+            </div>
+
+            <!-- Dashboard Title -->
+
+            <div class="dashboard-header">
+
+                <h1>Emergency Dashboard</h1>
+
+                <p>
+                    Real-time emergency response monitoring system
+                </p>
+
+            </div>
+
+            <!-- Statistics Cards -->
+
+            <div class="stats-container">
+
+                <div class="stat-card">
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+
+                    <div class="card-info">
+                        <h2>24</h2>
+                        <p>Active Emergencies</p>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-ambulance"></i>
+                    </div>
+
+                    <div class="card-info">
+                        <h2>12</h2>
+                        <p>Ambulances Active</p>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+
+                    <div class="card-info">
+                        <h2>18</h2>
+                        <p>Victims Identified</p>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+
+                    <div class="card-info">
+                        <h2>4 min</h2>
+                        <p>Avg Response Time</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Emergency Cases -->
+
+            <section class="cases-section">
+
+                <div class="section-header">
+
+                    <h2>Active Emergency Cases</h2>
+
+                    <button class="view-btn">
+                        View All
+                    </button>
+
+                </div>
+
+                <div class="cases-container">
+
+                    <!-- Case Card -->
+
+                    <div class="case-card">
+
+                        <div class="case-top">
+
+                            <span class="status active">
+                                Active
+                            </span>
+
+                            <span class="time">
+                                2 mins ago
+                            </span>
+
+                        </div>
+
+                        <h3>Road Accident</h3>
+
+                        <p>
+                            Anna Nagar Main Road
+                        </p>
+
+                        <div class="case-footer">
+
+                            <span>
+                                <i class="fa-solid fa-ambulance"></i>
+                                Ambulance Assigned
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Case Card -->
+
+                    <div class="case-card">
+
+                        <div class="case-top">
+
+                            <span class="status critical">
+                                Critical
+                            </span>
+
+                            <span class="time">
+                                5 mins ago
+                            </span>
+
+                        </div>
+
+                        <h3>Highway Collision</h3>
+
+                        <p>
+                            Chennai Bypass Highway
+                        </p>
+
+                        <div class="case-footer">
+
+                            <span>
+                                <i class="fa-solid fa-user-doctor"></i>
+                                Emergency Team Active
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Case Card -->
+
+                    <div class="case-card">
+
+                        <div class="case-top">
+
+                            <span class="status stable">
+                                Stable
+                            </span>
+
+                            <span class="time">
+                                10 mins ago
+                            </span>
+
+                        </div>
+
+                        <h3>Bike Accident</h3>
+
+                        <p>
+                            T Nagar Signal
+                        </p>
+
+                        <div class="case-footer">
+
+                            <span>
+                                <i class="fa-solid fa-location-dot"></i>
+                                GPS Tracking Enabled
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Notifications -->
+
+            <section class="notification-section">
+
+                <div class="section-header">
+
+                    <h2>Recent Alerts</h2>
+
+                </div>
+
+                <div class="notification-container">
+
+                    <div class="notification-card">
+
+                        <i class="fa-solid fa-bell"></i>
+
+                        <div>
+
+                            <h4>Emergency Alert Sent</h4>
+
+                            <p>
+                                Guardian notified successfully.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="notification-card">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        <div>
+
+                            <h4>GPS Tracking Active</h4>
+
+                            <p>
+                                Ambulance route monitoring started.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="notification-card">
+
+                        <i class="fa-solid fa-fingerprint"></i>
+
+                        <div>
+
+                            <h4>Fingerprint Verified</h4>
+
+                            <p>
+                                Victim identity confirmed successfully.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

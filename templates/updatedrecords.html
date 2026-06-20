@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Citizen Medical Record</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/updatedrecords.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <h2><i class="fa-solid fa-heart-pulse"></i> LifeLink</h2>
+        </div>
+        <div class="nav-actions">
+            <a href="{{ url_for('login') }}" class="secondary-btn">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Emergency Login
+            </a>
+            <a href="{{ url_for('register') }}" class="secondary-btn">
+                <i class="fa-solid fa-user-plus"></i>
+                Citizen Registration
+            </a>
+        </div>
+    </nav>
+
+    <main class="page-shell">
+        <section class="hero-block">
+            <div class="hero-copy">
+                <span class="hero-badge"><i class="fa-solid fa-file-medical"></i> Health Record Update</span>
+                <h1>Update Citizen Medical Record</h1>
+                <p>Securely update emergency healthcare information for registered citizens with a simple and responsive form.</p>
+            </div>
+
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Medical Record Details</h2>
+                    <p>Keep citizen health information accurate for emergency responders.</p>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fullname">Full Name</label>
+                            <input id="fullname" name="fullname" type="text" placeholder="Enter full name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="citizen_id">Citizen ID</label>
+                            <input id="citizen_id" name="citizen_id" type="text" placeholder="Enter citizen ID" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="blood_group">Blood Group</label>
+                            <input id="blood_group" name="blood_group" type="text" placeholder="A+, O-, B+" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="allergies">Allergies</label>
+                            <input id="allergies" name="allergies" type="text" placeholder="List any allergies" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="conditions">Existing Medical Conditions</label>
+                            <textarea id="conditions" name="conditions" rows="3" placeholder="Describe existing conditions" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency_contact">Emergency Contact Number</label>
+                            <input id="emergency_contact" name="emergency_contact" type="tel" placeholder="Enter phone number" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="medications">Current Medications</label>
+                            <textarea id="medications" name="medications" rows="3" placeholder="Enter current medications" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="address">Address</label>
+                            <textarea id="address" name="address" rows="3" placeholder="Enter address" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="medical_report">Upload Medical Report</label>
+                            <input id="medical_report" name="medical_report" type="file" class="form-control file-input">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="primary-btn update-btn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            Update Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

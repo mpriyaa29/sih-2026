@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Citizen Registration - LifeLink</title>
+
+    <!-- GLOBAL CSS -->
+    <link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/citizen.css') }}">
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            <h2>
+                <i class="fa-solid fa-heart-pulse"></i>
+                LifeLink
+            </h2>
+        </div>
+
+        <a href="login.html" class="login-link">
+            Emergency Login
+        </a>
+
+    </nav>
+
+
+    <!-- =========================
+         REGISTRATION SECTION
+    ========================== -->
+
+    <section class="registration-section">
+
+        <div class="registration-container">
+
+            <!-- LEFT SIDE -->
+
+            <div class="registration-left">
+
+                <span class="page-badge">
+                    Citizen Emergency Registration
+                </span>
+
+                <h1>
+                    Register Your Emergency
+                    Medical Identity
+                </h1>
+
+                <p>
+                    Citizens can securely register their
+                    medical details, face data, and
+                    fingerprint information for faster
+                    emergency identification during
+                    critical situations.
+                </p>
+
+                
+
+            </div>
+
+
+            <!-- RIGHT SIDE -->
+
+            <div class="registration-right">
+
+                <div class="form-card">
+
+                    <h2>Create Emergency Profile</h2>
+
+                    <form
+    action="http://127.0.0.1:5000/register"
+    method="POST"
+    enctype="multipart/form-data">
+
+    <!-- PERSONAL DETAILS -->
+
+    <div class="form-section">
+
+        <h3>Personal Information</h3>
+
+        <!-- FULL NAME -->
+
+        <div class="input-group">
+            <label>Full Name</label>
+
+            <div class="input-field">
+                <i class="fa-solid fa-user"></i>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="fullname"
+                    placeholder="Enter full name"
+                    required>
+            </div>
+        </div>
+
+        <!-- AGE + GENDER -->
+
+        <div class="form-grid">
+
+            <div class="input-group">
+                <label>Age</label>
+
+                <div class="input-field">
+                    <i class="fa-solid fa-calendar"></i>
+
+                    <input
+                        type="number"
+                        id="age"
+                        name="age"
+                        placeholder="Enter age"
+                        required>
+                </div>
+            </div>
+
+            <div class="input-group">
+
+                <label>Gender</label>
+
+                <select id="gender" name="gender" required>
+
+                    <option value="">Select Gender</option>
+
+                    <option value="Male">Male</option>
+
+                    <option value="Female">Female</option>
+
+                    <option value="Other">Other</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <!-- MOBILE -->
+
+        <div class="input-group">
+
+            <label>Mobile Number</label>
+
+            <div class="input-field">
+
+                <i class="fa-solid fa-phone"></i>
+
+                <input
+                    type="tel"
+                    id="mobile"
+                    name="mobile"
+                    placeholder="Enter mobile number"
+                    required>
+
+            </div>
+
+        </div>
+
+        <!-- ADDRESS -->
+
+        <div class="input-group">
+
+            <label>Address</label>
+
+            <div class="input-field textarea-field">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                <textarea
+                    id="address"
+                    name="address"
+                    placeholder="Enter address"
+                    required></textarea>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MEDICAL DETAILS -->
+
+    <div class="form-section">
+
+        <h3>Medical Information</h3>
+
+        <div class="form-grid">
+
+            <!-- BLOOD GROUP -->
+
+            <div class="input-group">
+
+                <label>Blood Group</label>
+
+                <select id="blood" name="blood_group" required>
+
+                    <option value="">Select Blood Group</option>
+
+                    <option>A+</option>
+                    <option>A-</option>
+                    <option>B+</option>
+                    <option>B-</option>
+                    <option>AB+</option>
+                    <option>AB-</option>
+                    <option>O+</option>
+                    <option>O-</option>
+
+                </select>
+
+            </div>
+
+            <!-- EMERGENCY CONTACT -->
+
+            <div class="input-group">
+
+                <label>Emergency Contact</label>
+
+                <div class="input-field">
+
+                    <i class="fa-solid fa-phone-volume"></i>
+
+                    <input
+                        type="tel"
+                        id="emergencyContact"
+                        name="emergency_contact"
+                        placeholder="Emergency contact"
+                        required>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ALLERGIES -->
+
+        <div class="input-group">
+
+            <label>Allergies</label>
+
+            <div class="input-field">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <input
+                    type="text"
+                    id="allergies"
+                    name="allergies"
+                    placeholder="Enter allergies">
+
+            </div>
+
+        </div>
+
+        <!-- MEDICAL HISTORY -->
+
+        <div class="input-group">
+
+            <label>Medical History</label>
+
+            <div class="input-field">
+
+                <i class="fa-solid fa-notes-medical"></i>
+
+                <input
+                    type="text"
+                    id="medicalHistory"
+                    name="diseases"
+                    placeholder="BP / Diabetes / Other">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BIOMETRIC SECTION -->
+
+    <div class="form-section">
+
+        <h3>Biometric Registration</h3>
+
+        <div class="biometric-grid">
+
+            <!-- FACE -->
+
+            <div class="biometric-card">
+
+                <i class="fa-solid fa-camera"></i>
+
+                <h4>Face Registration</h4>
+
+                <p>Upload or capture face image</p>
+
+                <input
+    type="file"
+    id="faceImage"
+    name="face_image"
+    hidden
+    required>
+
+                <button
+                    type="button"
+                    class="upload-btn"
+                    onclick="document.getElementById('faceImage').click()">
+
+                    Upload Face
+
+                </button>
+
+            </div>
+
+
+            <!-- FINGERPRINT -->
+
+            <div class="biometric-card">
+
+                <i class="fa-solid fa-fingerprint"></i>
+
+                <h4>Fingerprint Scan</h4>
+
+                <p>Connect R307 fingerprint sensor</p>
+
+                <button
+    type="button"
+    id="scanFingerprintBtn"
+    class="upload-btn">
+
+    Scan Fingerprint
+
+</button>
+
+                <div class="input-group">
+
+    <input
+    type="hidden"
+    id="fingerprint_id"
+    name="fingerprint_id"
+    required>
+
+</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SECURITY -->
+
+    <div class="form-section">
+
+        <h3>Account Security</h3>
+
+        <!-- PASSWORD -->
+
+        <div class="input-group">
+
+            <label>Password</label>
+
+            <div class="input-field">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create password"
+                    required>
+
+            </div>
+
+        </div>
+
+        <!-- OTP -->
+
+        <div class="otp-section">
+
+            <div class="input-field otp-input">
+
+                <i class="fa-solid fa-key"></i>
+
+                <input
+                    type="text"
+                    id="otp"
+                    name="otp"
+                    placeholder="Enter OTP">
+
+            </div>
+
+            <button
+                type="button"
+                class="otp-btn">
+
+                Send OTP
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUBMIT BUTTON -->
+
+    <button type="submit" class="register-btn">
+
+        <i class="fa-solid fa-user-plus"></i>
+
+        Register Emergency Profile
+
+    </button>
+
+</form>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <script src="{{ url_for('static', filename='js/citizen.js') }}"></script>
+</body>
+
+</html>

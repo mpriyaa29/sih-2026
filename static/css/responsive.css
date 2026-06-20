@@ -1,0 +1,292 @@
+
+/* =========================================
+   GLOBAL RESPONSIVE STYLES
+========================================= */
+
+
+/* =========================================
+   LARGE TABLETS
+========================================= */
+
+@media(max-width: 1200px){
+
+    .main-content{
+        padding: 25px;
+    }
+
+    .stats-container,
+    .summary-section,
+    .tracking-info,
+    .medical-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+/* =========================================
+   TABLETS
+========================================= */
+
+@media(max-width: 992px){
+
+    /* Sidebar */
+
+    .sidebar{
+        width: 220px;
+    }
+
+    .main-content{
+        margin-left: 220px;
+    }
+
+    /* Dashboard */
+
+    .stats-container,
+    .summary-section,
+    .tracking-info{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Cards */
+
+    .cases-container{
+        grid-template-columns: 1fr;
+    }
+
+    /* Profile */
+
+    .profile-details{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Medical */
+
+    .medical-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+/* =========================================
+   MOBILE DEVICES
+========================================= */
+
+@media(max-width: 768px){
+
+    /* Sidebar Hide */
+
+    .sidebar{
+        display: none;
+    }
+
+    /* Main Content */
+
+    .main-content{
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    /* Topbar */
+
+    .topbar{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    /* Search */
+
+    .search-box{
+        width: 100%;
+    }
+
+    /* Dashboard */
+
+    .stats-container,
+    .summary-section,
+    .tracking-info,
+    .medical-grid,
+    .profile-details{
+        grid-template-columns: 1fr;
+    }
+
+    /* Cases */
+
+    .cases-container{
+        grid-template-columns: 1fr;
+    }
+
+    /* Scan Section */
+
+    .scan-section{
+        grid-template-columns: 1fr;
+    }
+
+    /* Profile Header */
+
+    .profile-header{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Section Header */
+
+    .section-header{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    /* Table Header */
+
+    .table-header{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    /* Search Input */
+
+    .search-input{
+        width: 100%;
+    }
+
+    /* Action Buttons */
+
+    .action-section{
+        flex-direction: column;
+    }
+
+    /* Alert Cards */
+
+    .alert-card{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Notification Cards */
+
+    .notification-card{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE DEVICES
+========================================= */
+
+@media(max-width: 576px){
+
+    /* Global Padding */
+
+    .main-content{
+        padding: 16px;
+    }
+
+    /* Headings */
+
+    .topbar h1,
+    .dashboard-header h1{
+        font-size: 26px;
+    }
+
+    .section-header h2,
+    .timeline-header h2,
+    .panel-header h2,
+    .security-header h2,
+    .instruction-header h2{
+        font-size: 20px;
+    }
+
+    /* Cards */
+
+    .stat-card,
+    .summary-card,
+    .case-card,
+    .info-card,
+    .medical-card,
+    .alert-card,
+    .notification-card{
+        padding: 20px;
+    }
+
+    /* Buttons */
+
+    .primary-btn,
+    .secondary-btn,
+    .login-btn,
+    .scan-btn,
+    .send-alert-btn,
+    .refresh-btn,
+    .export-btn{
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Login */
+
+    .login-box{
+        padding: 28px 20px;
+    }
+
+    .login-box h2{
+        font-size: 24px;
+    }
+
+    .otp-section{
+        flex-direction: column;
+    }
+
+    /* Map */
+
+    .map-container{
+        height: 300px;
+    }
+
+    /* Table */
+
+    table{
+        min-width: 650px;
+    }
+
+}
+
+
+/* =========================================
+   EXTRA SMALL DEVICES
+========================================= */
+
+@media(max-width: 400px){
+
+    .topbar h1,
+    .dashboard-header h1{
+        font-size: 22px;
+    }
+
+    .profile-info h2{
+        font-size: 22px;
+    }
+
+    .card-info h2,
+    .summary-card h2{
+        font-size: 22px;
+    }
+
+    .case-card h3{
+        font-size: 18px;
+    }
+
+    .section-title h2{
+        font-size: 18px;
+    }
+
+    .map-container{
+        height: 250px;
+    }
+
+}

@@ -1,0 +1,38 @@
+
+        body{
+            background:#081229;
+            color:white;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            font-family:sans-serif;
+        }
+
+        .success-box{
+            text-align:center;
+            background:#1e293b;
+            padding:50px;
+            border-radius:25px;
+            width:500px;
+        }
+
+        h1{
+            color:#22c55e;
+            margin-bottom:20px;
+        }
+
+        p{
+            margin-bottom:30px;
+            color:#cbd5e1;
+        }
+
+        a{
+            background:#2563eb;
+            color:white;
+            text-decoration:none;
+            padding:14px 24px;
+            border-radius:12px;
+        }
+
+   

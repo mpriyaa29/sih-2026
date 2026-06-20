@@ -1,0 +1,333 @@
+
+/* =========================
+   GOOGLE FONT
+========================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   ROOT COLORS
+========================= */
+
+:root{
+
+    --primary-color: #2563eb;
+    --secondary-color: #1e293b;
+    --background-color: #0f172a;
+    --card-color: #1e293b;
+    --danger-color: #ef4444;
+    --success-color: #22c55e;
+    --warning-color: #f59e0b;
+    --white-color: #ffffff;
+    --text-color: #cbd5e1;
+    --border-color: #334155;
+
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background: var(--background-color);
+    color: var(--white-color);
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   LINKS
+========================= */
+
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* =========================
+   LISTS
+========================= */
+
+ul{
+    list-style: none;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button{
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+
+/* =========================
+   INPUTS
+========================= */
+
+input,
+select{
+    outline: none;
+    border: none;
+    font-family: inherit;
+}
+
+
+/* =========================
+   IMAGES
+========================= */
+
+img{
+    width: 100%;
+    display: block;
+}
+
+
+/* =========================
+   COMMON CONTAINER
+========================= */
+
+.container{
+    width: 100%;
+    min-height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+    width: 260px;
+    height: 100vh;
+    background: var(--secondary-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 30px 20px;
+    border-right: 1px solid var(--border-color);
+}
+
+
+/* =========================
+   LOGO
+========================= */
+
+.logo{
+    margin-bottom: 40px;
+}
+
+.logo h2{
+    color: var(--primary-color);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   SIDEBAR MENU
+========================= */
+
+.menu{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu li a{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    color: var(--text-color);
+    transition: 0.3s;
+    font-size: 15px;
+}
+
+.menu li a:hover{
+    background: var(--primary-color);
+    color: var(--white-color);
+}
+
+.menu li.active a{
+    background: var(--primary-color);
+    color: var(--white-color);
+}
+
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.main-content{
+    margin-left: 260px;
+    padding: 30px;
+}
+
+
+/* =========================
+   TOPBAR
+========================= */
+
+.topbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+
+/* =========================
+   SEARCH BOX
+========================= */
+
+.search-box{
+    background: var(--card-color);
+    padding: 12px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 320px;
+    border: 1px solid var(--border-color);
+}
+
+.search-box input{
+    background: transparent;
+    color: var(--white-color);
+    width: 100%;
+}
+
+.search-box i{
+    color: var(--text-color);
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-color);
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.profile i{
+    color: var(--primary-color);
+}
+
+
+/* =========================
+   SECTION TITLES
+========================= */
+
+.section-title{
+    margin-bottom: 20px;
+}
+
+.section-title h2{
+    font-size: 24px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+    background: var(--card-color);
+    border-radius: 18px;
+    padding: 25px;
+    border: 1px solid var(--border-color);
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary-btn{
+    background: var(--primary-color);
+    color: var(--white-color);
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.primary-btn:hover{
+    opacity: 0.9;
+}
+
+.secondary-btn{
+    background: var(--danger-color);
+    color: var(--white-color);
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.secondary-btn:hover{
+    opacity: 0.9;
+}
+
+
+/* =========================
+   STATUS COLORS
+========================= */
+
+.success{
+    color: var(--success-color);
+}
+
+.danger{
+    color: var(--danger-color);
+}
+
+.warning{
+    color: var(--warning-color);
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar{
+    width: 8px;
+}
+
+::-webkit-scrollbar-track{
+    background: var(--secondary-color);
+}
+
+::-webkit-scrollbar-thumb{
+    background: var(--primary-color);
+    border-radius: 10px;
+}

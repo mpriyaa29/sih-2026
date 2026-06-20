@@ -1,0 +1,507 @@
+/* =========================
+   GPS TRACKING PAGE
+========================= */
+
+.gps-container{
+    display: flex;
+    min-height: 100vh;
+    background: var(--background-color);
+}
+
+
+/* =========================
+   TOPBAR
+========================= */
+
+.topbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.topbar h1{
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.topbar p{
+    color: var(--text-color);
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+
+/* =========================
+   TRACKING STATUS
+========================= */
+
+.tracking-status{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    padding: 12px 18px;
+    border-radius: 14px;
+    color: var(--success-color);
+    font-weight: 500;
+}
+
+
+/* =========================
+   LIVE DOT
+========================= */
+
+.live-dot{
+    width: 10px;
+    height: 10px;
+    background: var(--success-color);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+
+/* =========================
+   PULSE ANIMATION
+========================= */
+
+@keyframes pulse{
+
+    0%{
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50%{
+        transform: scale(1.4);
+        opacity: 0.6;
+    }
+
+    100%{
+        transform: scale(1);
+        opacity: 1;
+    }
+
+}
+
+
+/* =========================
+   MAP SECTION
+========================= */
+
+.map-section{
+    margin-bottom: 35px;
+}
+
+
+/* =========================
+   MAP CARD
+========================= */
+
+.map-card{
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 28px;
+}
+
+
+/* =========================
+   MAP HEADER
+========================= */
+
+.map-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.map-header h2{
+    font-size: 24px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   REFRESH BUTTON
+========================= */
+
+.refresh-btn{
+    background: var(--primary-color);
+    color: var(--white-color);
+    padding: 12px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+.refresh-btn:hover{
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   MAP CONTAINER
+========================= */
+
+.map-container{
+    width: 100%;
+    height: 420px;
+    border-radius: 20px;
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1e293b
+    );
+    border: 2px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+.map-container i{
+    font-size: 70px;
+    color: var(--primary-color);
+}
+
+.map-container p{
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+
+/* =========================
+   TRACKING INFO
+========================= */
+
+.tracking-info{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+    margin-bottom: 35px;
+}
+
+
+/* =========================
+   INFO CARD
+========================= */
+
+.info-card{
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    padding: 26px;
+    transition: 0.3s;
+}
+
+.info-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.12);
+}
+
+
+/* =========================
+   CARD HEADER
+========================= */
+
+.card-header{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.card-header i{
+    width: 52px;
+    height: 52px;
+    background: rgba(37, 99, 235, 0.15);
+    color: var(--primary-color);
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+.card-header h3{
+    font-size: 22px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   INFO CONTENT
+========================= */
+
+.info-content{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* =========================
+   INFO ROW
+========================= */
+
+.info-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+
+.info-row span{
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.info-row p{
+    font-size: 15px;
+    font-weight: 500;
+}
+
+
+/* =========================
+   STATUS COLORS
+========================= */
+
+.active-status{
+    color: var(--success-color);
+}
+
+.alert-status{
+    color: var(--primary-color);
+}
+
+
+/* =========================
+   TIMELINE SECTION
+========================= */
+
+.timeline-section{
+    margin-bottom: 30px;
+}
+
+
+/* =========================
+   TIMELINE CARD
+========================= */
+
+.timeline-card{
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 30px;
+}
+
+
+/* =========================
+   TIMELINE HEADER
+========================= */
+
+.timeline-header{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.timeline-header i{
+    width: 55px;
+    height: 55px;
+    background: rgba(37, 99, 235, 0.15);
+    color: var(--primary-color);
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+.timeline-header h2{
+    font-size: 24px;
+}
+
+
+/* =========================
+   TIMELINE
+========================= */
+
+.timeline{
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline::before{
+    content: "";
+    width: 3px;
+    height: 100%;
+    background: var(--border-color);
+    position: absolute;
+    left: 8px;
+    top: 0;
+}
+
+
+/* =========================
+   TIMELINE ITEM
+========================= */
+
+.timeline-item{
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-dot{
+    width: 18px;
+    height: 18px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    position: absolute;
+    left: -30px;
+    top: 5px;
+}
+
+.timeline-dot.active{
+    background: var(--success-color);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.7);
+}
+
+
+/* =========================
+   TIMELINE CONTENT
+========================= */
+
+.timeline-content h4{
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.timeline-content p{
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width: 992px){
+
+    .tracking-info{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media(max-width: 768px){
+
+    .sidebar{
+        display: none;
+    }
+
+    .main-content{
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .topbar{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .map-header{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .tracking-info{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media(max-width: 576px){
+
+    .topbar h1{
+        font-size: 26px;
+    }
+
+    .map-container{
+        height: 320px;
+    }
+
+    .timeline-header h2{
+        font-size: 20px;
+    }
+
+}
+
+
+/* GRID LAYOUT */
+
+.gps-grid{
+    display:grid;
+
+    grid-template-columns:
+    1.4fr 0.9fr;
+
+    gap:24px;
+
+    align-items:start;
+}
+
+/* RIGHT COLUMN */
+
+.right-column{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:22px;
+}
+
+/* MAP CARD */
+
+.map-card{
+    height:100%;
+}
+
+/* TIMELINE */
+
+.timeline-card{
+    margin-top:24px;
+}
+
+/* INFO CARD */
+
+.info-card{
+    margin-bottom:0;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .gps-grid{
+        grid-template-columns:1fr;
+    }
+
+    .right-column{
+        grid-template-columns:1fr;
+    }
+}

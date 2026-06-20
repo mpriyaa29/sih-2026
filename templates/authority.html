@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0" />
+
+    <title>Authority Monitoring</title>
+
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/authority.css') }}">
+
+</head>
+
+<body>
+
+    <div class="authority-container">
+
+        <!-- Sidebar -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <h2>LIFELINK</h2>
+            </div>
+
+            <ul class="menu">
+
+    <li>
+        <a href="{{ url_for('dashboard') }}">
+            <i class="fa-solid fa-table-columns"></i>
+            Dashboard
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('victim') }}">
+            <i class="fa-solid fa-user"></i>
+            Victim Identification
+        </a>
+    </li>
+
+    <li>
+        <a href="#">
+            <i class="fa-solid fa-heart-pulse"></i>
+            Emergency Access
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('gps') }}">
+            <i class="fa-solid fa-location-dot"></i>
+            GPS Tracking
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{{ url_for('authority') }}">
+            <i class="fa-solid fa-shield-halved"></i>
+            Authority Monitoring
+        </a>
+    </li>
+
+</ul>
+
+        </aside>
+
+        <!-- Main Content -->
+
+        <main class="main-content">
+
+            <!-- Topbar -->
+
+            <div class="topbar">
+
+                <div>
+                    <h1>Authority Monitoring</h1>
+
+                    <p>
+                        Traffic police emergency coordination dashboard
+                    </p>
+                </div>
+
+                
+
+            </div>
+
+            <div class="content-center">
+
+                <section class="table-section">
+
+                    <div class="table-card">
+
+                        <div class="table-header">
+
+                            <h2>Emergency Monitoring Records</h2>
+
+                            <input
+                                id="tableSearch"
+                                type="text"
+                                placeholder="Search records..."
+                                class="search-input"
+                                aria-label="Search records"
+                            />
+
+                        </div>
+
+                        <div class="table-wrapper">
+
+                            <table id="recordsTable">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th class="sortable" data-col="0">Emergency Type <span class="sort-indicator"></span></th>
+                                        <th class="sortable" data-col="1">Location <span class="sort-indicator"></span></th>
+                                        <th class="sortable" data-col="2">Status <span class="sort-indicator"></span></th>
+                                        <th class="sortable" data-col="3">Responder <span class="sort-indicator"></span></th>
+                                        <th class="sortable" data-col="4">Response Time <span class="sort-indicator"></span></th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td>Road Accident</td>
+                                        <td>Anna Nagar</td>
+                                        <td>
+                                            <span class="table-status critical">
+                                                Critical
+                                            </span>
+                                        </td>
+                                        <td>Police Team A</td>
+                                        <td>3 min</td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>Bike Collision</td>
+                                        <td>T Nagar</td>
+                                        <td>
+                                            <span class="table-status active">
+                                                Active
+                                            </span>
+                                        </td>
+                                        <td>Ambulance Unit 4</td>
+                                        <td>5 min</td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>Vehicle Crash</td>
+                                        <td>OMR Road</td>
+                                        <td>
+                                            <span class="table-status stable">
+                                                Stable
+                                            </span>
+                                        </td>
+                                        <td>Emergency Team B</td>
+                                        <td>7 min</td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+    (function(){
+        // Debounced search filtering
+        const search = document.getElementById('tableSearch');
+        const table = document.getElementById('recordsTable');
+        const tbody = table && table.tBodies[0];
+        function debounce(fn, wait){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), wait); }; }
+
+        function filterRows(q){
+            if(!tbody) return;
+            const term = q.trim().toLowerCase();
+            Array.from(tbody.rows).forEach(row=>{
+                const text = row.textContent.toLowerCase();
+                row.style.display = term ? (text.includes(term) ? '' : 'none') : '';
+            });
+        }
+
+        if(search){
+            search.addEventListener('input', debounce((e)=>filterRows(e.target.value), 160));
+        }
+
+        // Column sorting
+        function getCellValue(row, idx){
+            const cell = row.children[idx];
+            return cell ? cell.textContent.trim() : '';
+        }
+
+        function comparer(idx, asc){
+            return function(a,b){
+                const v1 = getCellValue(asc ? a : b, idx).toLowerCase();
+                const v2 = getCellValue(asc ? b : a, idx).toLowerCase();
+                const num1 = parseFloat(v1); const num2 = parseFloat(v2);
+                if(!isNaN(num1) && !isNaN(num2)) return num1 - num2;
+                return v1.localeCompare(v2);
+            };
+        }
+
+        document.querySelectorAll('#recordsTable thead th.sortable').forEach(th=>{
+            th.addEventListener('click', ()=>{
+                const idx = parseInt(th.dataset.col,10);
+                const current = th.classList.contains('asc') ? 'asc' : (th.classList.contains('desc') ? 'desc' : null);
+                const asc = current !== 'asc';
+                // reset classes
+                document.querySelectorAll('#recordsTable thead th').forEach(h=>h.classList.remove('asc','desc'));
+                th.classList.add(asc ? 'asc' : 'desc');
+                // sort rows
+                const rows = Array.from(tbody.rows).sort(comparer(idx, asc));
+                rows.forEach(r=>tbody.appendChild(r));
+            });
+        });
+
+        // Prevent horizontal scroll body overflow
+        window.addEventListener('resize', ()=>{
+            document.documentElement.style.overflowX = 'hidden';
+        });
+    })();
+    </script>
+
+</body>
+
+</html>

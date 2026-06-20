@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0" />
+
+    <title>Victim Identification</title>
+
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/victim.css') }}">
+
+</head>
+
+<body>
+
+    <div class="victim-container">
+
+        <!-- Sidebar -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <h2>LifeLink</h2>
+            </div>
+
+            <ul class="menu">
+
+    <li>
+        <a href="{{ url_for('dashboard') }}">
+            <i class="fa-solid fa-table-columns"></i>
+            Dashboard
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{{ url_for('victim') }}">
+            <i class="fa-solid fa-user"></i>
+            Victim Identification
+        </a>
+    </li>
+
+    <li>
+    {% if citizen %}
+    <a href="{{ url_for('emergency_access', citizen_id=citizen.id) }}">
+        <i class="fa-solid fa-heart-pulse"></i>
+        Emergency Access
+    </a>
+    {% else %}
+    <a href="#">
+        <i class="fa-solid fa-heart-pulse"></i>
+        Emergency Access
+    </a>
+    {% endif %}
+</li>
+    
+    <li>
+        <a href="{{ url_for('gps') }}">
+            <i class="fa-solid fa-location-dot"></i>
+            GPS Tracking
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('authority') }}">
+            <i class="fa-solid fa-shield-halved"></i>
+            Authority Monitoring
+        </a>
+    </li>
+
+</ul>
+
+        </aside>
+
+        <!-- Main Content -->
+
+        <main class="main-content">
+
+            <!-- Top Bar -->
+
+            <div class="topbar">
+
+                <h1>Victim Identification</h1>
+
+                <div class="profile">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                    <span>Emergency Responder</span>
+
+                </div>
+
+            </div>
+
+            <!-- Face Recognition Section -->
+
+            <section class="scan-section">
+
+                <div class="scan-card">
+
+                    <div class="section-title">
+                        <i class="fa-solid fa-camera"></i>
+                        <h2>AI Face Recognition</h2>
+                    </div>
+
+                    <div class="camera-box">
+
+                        <i class="fa-solid fa-camera camera-icon"></i>
+
+                        <p>Camera Preview</p>
+
+                    </div>
+
+                    <form
+    id="victimForm"
+    method="POST"
+    enctype="multipart/form-data"
+>
+
+    <input
+        type="file"
+        id="faceUpload"
+        name="face_image"
+        accept="image/*"
+        hidden
+    >
+
+    <button
+        type="button"
+        class="scan-btn"
+        onclick="document.getElementById('faceUpload').click()"
+    >
+        Start Face Scan
+    </button>
+
+</form>
+
+                    </div>
+
+                <!-- Fingerprint Verification -->
+
+                <div class="scan-card">
+
+                    <div class="section-title">
+                        <i class="fa-solid fa-fingerprint"></i>
+                        <h2>Fingerprint Verification</h2>
+                    </div>
+
+                    <div class="fingerprint-box">
+
+                        <i class="fa-solid fa-fingerprint fingerprint-icon"></i>
+
+                        <p>R307 Sensor Connected</p>
+
+                    </div>
+
+                    <button
+    class="scan-btn"
+    onclick="window.location.href='/fingerprint-search'"
+>
+    Scan Fingerprint
+</button>
+
+                </div>
+
+            </section>
+
+            <!-- Scan Status -->
+
+            <section class="status-section">
+
+                <div class="status-card" id="processingCard" style="display:none;">
+
+                    <div class="status-header">
+
+                        <h2>Identification Status</h2>
+
+                        <span class="status-badge">
+                            Processing
+                        </span>
+
+                    </div>
+
+                    <div class="progress-container">
+
+                        <div class="progress-bar"></div>
+
+                    </div>
+
+                    <p class="status-message">
+                        AI system is analyzing biometric data...
+                    </p>
+
+                </div>
+
+            </section>
+
+            <!-- Victim Details -->
+
+            <section class="victim-profile">
+
+                {% if citizen %}
+
+                <div class="profile-card">
+
+                    <div class="profile-header">
+
+                        <div class="profile-image">
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+                        <div class="profile-info">
+
+                            <h2>{{ citizen.fullname }}</h2>
+
+                            <p>Victim Identified Successfully</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="profile-details">
+
+                        <div class="detail-box">
+                            <h4>Age</h4>
+                            <p>{{ citizen.age }}</p>
+                        </div>
+
+                        <div class="detail-box">
+                            <h4>Blood Group</h4>
+                            <p>{{ citizen.blood_group }}</p>
+                        </div>
+
+                        <div class="detail-box">
+                            <h4>Status</h4>
+                            <p>{{ citizen.diseases }}</p>
+                        </div>
+
+                        <div class="detail-box">
+                            <h4>Emergency Contact</h4>
+                            <p>{{ citizen.emergency_contact }}</p>
+                        </div>
+
+                    </div>
+
+                    {% if citizen %}
+
+                    <a href="{{ url_for('emergency_access', citizen_id=citizen.id) }}" class="access-btn">
+                    Enable Emergency Access
+                    </a>
+
+                    {% endif %}
+
+                </div>
+
+                {% endif %}
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/victim.js') }}"></script>
+
+</body>
+
+</html>

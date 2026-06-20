@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Emergency Alerts - LifeLink</title>
+
+    <link rel="stylesheet" href="css/alerts.css" />
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+</head>
+
+<body>
+
+    <div class="alerts-container">
+
+        <!-- Sidebar -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <h2>ResQID</h2>
+            </div>
+
+            <ul class="menu">
+
+    <li>
+        <a href="{{ url_for('dashboard') }}">
+            <i class="fa-solid fa-table-columns"></i>
+            Dashboard
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('victim') }}">
+            <i class="fa-solid fa-user"></i>
+            Victim Identification
+        </a>
+    </li>
+
+    <li>
+        <a href="#">
+            <i class="fa-solid fa-heart-pulse"></i>
+            Emergency Access
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('gps') }}">
+            <i class="fa-solid fa-location-dot"></i>
+            GPS Tracking
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('authority') }}">
+            <i class="fa-solid fa-shield-halved"></i>
+            Authority Monitoring
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{{ url_for('alerts') }}">
+            <i class="fa-solid fa-bell"></i>
+            Emergency Alerts
+        </a>
+    </li>
+
+</ul>
+
+        </aside>
+
+        <!-- Main Content -->
+
+        <main class="main-content">
+
+            <!-- Topbar -->
+
+            <div class="topbar">
+
+                <div>
+                    <h1>Emergency Alerts</h1>
+
+                    <p>
+                        Real-time emergency notification management
+                    </p>
+                </div>
+
+                <button class="send-alert-btn">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    Send Alert
+
+                </button>
+
+            </div>
+
+            <!-- Alert Summary -->
+
+            <section class="summary-section">
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-bell"></i>
+
+                    <div>
+
+                        <h2>48</h2>
+
+                        <p>Total Alerts Sent</p>
+
+                    </div>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <div>
+
+                        <h2>41</h2>
+
+                        <p>Successfully Delivered</p>
+
+                    </div>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                    <div>
+
+                        <h2>7</h2>
+
+                        <p>Pending Notifications</p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Recent Alerts -->
+
+            <section class="alerts-section">
+
+                <div class="section-header">
+
+                    <h2>Recent Emergency Alerts</h2>
+
+                </div>
+
+                <div class="alert-list">
+
+                    <!-- Alert Card -->
+
+                    <div class="alert-card success">
+
+                        <div class="alert-icon">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <div class="alert-content">
+
+                            <h3>Guardian Alert Delivered</h3>
+
+                            <p>
+                                Emergency notification sent successfully.
+                            </p>
+
+                            <span>2 minutes ago</span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Alert Card -->
+
+                    <div class="alert-card warning">
+
+                        <div class="alert-icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+
+                        <div class="alert-content">
+
+                            <h3>Pending Alert Delivery</h3>
+
+                            <p>
+                                Waiting for guardian confirmation.
+                            </p>
+
+                            <span>5 minutes ago</span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Alert Card -->
+
+                    <div class="alert-card info">
+
+                        <div class="alert-icon">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div class="alert-content">
+
+                            <h3>GPS Tracking Activated</h3>
+
+                            <p>
+                                Live ambulance route shared successfully.
+                            </p>
+
+                            <span>8 minutes ago</span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Alert Card -->
+
+                    <div class="alert-card danger">
+
+                        <div class="alert-icon">
+                            <i class="fa-solid fa-siren-on"></i>
+                        </div>
+
+                        <div class="alert-content">
+
+                            <h3>Critical Emergency Alert</h3>
+
+                            <p>
+                                High-priority emergency response initiated.
+                            </p>
+
+                            <span>12 minutes ago</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Notification Panel -->
+
+            <section class="notification-panel">
+
+                <div class="panel-card">
+
+                    <div class="panel-header">
+
+                        <i class="fa-solid fa-message"></i>
+
+                        <h2>Notification Preview</h2>
+
+                    </div>
+
+                    <div class="message-box">
+
+                        <p>
+
+                            <strong>Emergency Alert!</strong>
+
+                        </p>
+
+                        <p>
+                            Your family member has been admitted for
+                            emergency treatment.
+                        </p>
+
+                        <p>
+                            Ambulance tracking has been enabled.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Access Logs - LifeLink</title>
+
+    <link rel="stylesheet" href="css/logs.css" />
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+</head>
+
+<body>
+
+    <div class="logs-container">
+
+        <!-- Sidebar -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <h2>LifeLink</h2>
+            </div>
+
+            <ul class="menu">
+
+    <li>
+        <a href="{{ url_for('dashboard') }}">
+            <i class="fa-solid fa-table-columns"></i>
+            Dashboard
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('victim') }}">
+            <i class="fa-solid fa-user"></i>
+            Victim Identification
+        </a>
+    </li>
+
+    <li>
+        <a href="#"></a>
+            <i class="fa-solid fa-heart-pulse"></i>
+            Emergency Access
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('gps') }}">
+            <i class="fa-solid fa-location-dot"></i>
+            GPS Tracking
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('authority') }}">
+            <i class="fa-solid fa-shield-halved"></i>
+            Authority Monitoring
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="{{ url_for('logs') }}">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            Access Logs
+        </a>
+    </li>
+
+</ul>
+
+        </aside>
+
+        <!-- Main Content -->
+
+        <main class="main-content">
+
+            <!-- Topbar -->
+
+            <div class="topbar">
+
+                <div>
+                    <h1>Access Logs</h1>
+
+                    <p>
+                        System activity and security monitoring
+                    </p>
+                </div>
+
+                <button class="export-btn">
+
+                    <i class="fa-solid fa-download"></i>
+
+                    Export Logs
+
+                </button>
+
+            </div>
+
+            <!-- Summary Cards -->
+
+            <section class="summary-section">
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                    <div>
+
+                        <h2>132</h2>
+
+                        <p>Total Access Records</p>
+
+                    </div>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                    <div>
+
+                        <h2>120</h2>
+
+                        <p>Verified Sessions</p>
+
+                    </div>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <div>
+
+                        <h2>12</h2>
+
+                        <p>Security Alerts</p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Logs Table -->
+
+            <section class="table-section">
+
+                <div class="table-card">
+
+                    <div class="table-header">
+
+                        <h2>Recent Activity Logs</h2>
+
+                        <input
+                            type="text"
+                            placeholder="Search logs..."
+                            class="search-input"
+                        />
+
+                    </div>
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                                <th>Status</th>
+                                <th>Time</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>Arun Kumar</td>
+
+                                <td>Police Officer</td>
+
+                                <td>Viewed Emergency Records</td>
+
+                                <td>
+                                    <span class="status success">
+                                        Success
+                                    </span>
+                                </td>
+
+                                <td>10:20 AM</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>Ramesh</td>
+
+                                <td>Ambulance Staff</td>
+
+                                <td>Verified Victim Identity</td>
+
+                                <td>
+                                    <span class="status success">
+                                        Success
+                                    </span>
+                                </td>
+
+                                <td>10:28 AM</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>Admin User</td>
+
+                                <td>Authority</td>
+
+                                <td>Monitored GPS Tracking</td>
+
+                                <td>
+                                    <span class="status success">
+                                        Active
+                                    </span>
+                                </td>
+
+                                <td>10:35 AM</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>Unknown Attempt</td>
+
+                                <td>Unauthorized</td>
+
+                                <td>Failed Login Attempt</td>
+
+                                <td>
+                                    <span class="status danger">
+                                        Blocked
+                                    </span>
+                                </td>
+
+                                <td>10:42 AM</td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>Hospital Staff</td>
+
+                                <td>Medical Team</td>
+
+                                <td>Updated Patient Status</td>
+
+                                <td>
+                                    <span class="status success">
+                                        Updated
+                                    </span>
+                                </td>
+
+                                <td>10:50 AM</td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- Security Notifications -->
+
+            <section class="security-section">
+
+                <div class="security-card">
+
+                    <div class="security-header">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        <h2>Security Notifications</h2>
+
+                    </div>
+
+                    <div class="security-alert">
+
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        <p>
+                            System monitoring active. All emergency
+                            access sessions are being securely logged.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

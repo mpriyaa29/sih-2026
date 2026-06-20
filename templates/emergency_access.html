@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0" />
+
+    <title>Emergency Medical Access</title>
+
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/emergency.css') }}">
+
+</head>
+
+<body>
+
+    <div class="emergency-container">
+
+        <!-- Sidebar -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <h2>LifeLink</h2>
+            </div>
+
+           <ul class="menu">
+
+    <li>
+        <a href="{{ url_for('dashboard') }}">
+            <i class="fa-solid fa-table-columns"></i>
+            Dashboard
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('victim') }}">
+            <i class="fa-solid fa-user"></i>
+            Victim Identification
+        </a>
+    </li>
+
+    <li class="active">
+        <a href="#">
+            <i class="fa-solid fa-heart-pulse"></i>
+            Emergency Access
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('gps') }}">
+            <i class="fa-solid fa-location-dot"></i>
+            GPS Tracking
+        </a>
+    </li>
+
+    <li>
+        <a href="{{ url_for('authority') }}">
+            <i class="fa-solid fa-shield-halved"></i>
+            Authority Monitoring
+        </a>
+    </li>
+
+</ul>
+
+        </aside>
+
+        <!-- Main Content -->
+
+        <main class="main-content">
+
+            <!-- Top Bar -->
+
+            <div class="topbar">
+
+                <div>
+                    <h1>Emergency Medical Access</h1>
+                    <p>
+                        Temporary emergency medical information access
+                    </p>
+                </div>
+
+                <div class="timer-box">
+                    <i class="fa-solid fa-clock"></i>
+                    <span id="timer">02:00</span>
+                </div>
+
+            </div>
+
+            <!-- Access Alert -->
+
+            <section class="alert-section">
+
+                <div class="alert-card">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    <div>
+
+                        <h3>Temporary Emergency Access Enabled</h3>
+
+                        <p>
+                            Access will automatically lock after 2 minutes.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Victim Profile -->
+
+            <section class="profile-section" id="medical-info">
+
+                <div class="profile-card">
+
+                    <div class="profile-header">
+
+                        <div class="profile-image">
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+                        <div class="profile-info">
+
+                            <h2>{{ citizen.fullname }}</h2>
+
+                            <p>Victim Medical Information</p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Medical Details -->
+
+                    <div class="medical-grid">
+
+                        <div class="medical-card">
+
+                            <i class="fa-solid fa-droplet"></i>
+
+                            <h4>Blood Group</h4>
+
+                            <p>{{ citizen.blood_group }}</p>
+
+                        </div>
+
+                        <div class="medical-card">
+
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+
+                            <h4>Allergies</h4>
+
+                            <p>
+{% if record %}
+    {{ record.allergies }}
+{% else %}
+    {{ citizen.allergies }}
+{% endif %}
+</p>
+
+                        </div>
+
+                        <div class="medical-card">
+
+    <i class="fa-solid fa-heart-pulse"></i>
+
+    <h4>Medical History</h4>
+
+    <p>
+        {% if record %}
+            {{ record.conditions }}
+        {% else %}
+            {{ citizen.diseases }}
+        {% endif %}
+    </p>
+
+</div>
+
+<div class="medical-card">
+
+    <i class="fa-solid fa-pills"></i>
+
+    <h4>Medications</h4>
+
+    <p>
+        {% if record %}
+            {{ record.medications }}
+        {% else %}
+            None
+        {% endif %}
+    </p>
+
+</div>
+
+<div class="medical-card">
+
+    <i class="fa-solid fa-location-dot"></i>
+
+    <h4>Address</h4>
+
+    <p>
+        {% if record %}
+            {{ record.address }}
+        {% else %}
+            Not Available
+        {% endif %}
+    </p>
+
+</div>
+
+                        <div class="medical-card">
+
+                            <i class="fa-solid fa-phone"></i>
+
+                            <h4>Emergency Contact</h4>
+
+                            <p>
+{% if record %}
+    {{ record.emergency_contact }}
+{% else %}
+    {{ citizen.emergency_contact }}
+{% endif %}
+</p>
+
+                        </div>
+
+                        {% if record and record.medical_report %}
+
+<div class="medical-card">
+
+    <i class="fa-solid fa-file-medical"></i>
+
+    <h4>Medical Report</h4>
+
+    <a href="{{ url_for('static',
+        filename='uploads/' + record.medical_report) }}"
+       target="_blank">
+
+        View Report
+
+    </a>
+
+</div>
+
+{% endif %}
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Emergency Instructions -->
+
+            <section class="instructions-section">
+
+                <div class="instructions-card">
+
+                    <div class="instruction-header">
+
+                        <i class="fa-solid fa-notes-medical"></i>
+
+                        <h2>Emergency Instructions</h2>
+
+                    </div>
+
+                    <ul>
+
+                        <li>
+                            Monitor victim vital signs continuously.
+                        </li>
+
+                        <li>
+                            Avoid allergy-triggering medications.
+                        </li>
+
+                        <li>
+                            Notify hospital emergency department immediately.
+                        </li>
+
+                        <li>
+                            Maintain secure handling of medical information.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </section>
+
+            <!-- Emergency Action Buttons -->
+
+            <section class="action-section">
+
+                <a href="{{ url_for('gps') }}" class="primary-btn">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Enable GPS Tracking
+                </a>
+
+                <a href="{{ url_for('send_alert', citizen_id=citizen.id) }}" class="secondary-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    Send Guardian Alert
+                </a>
+
+            </section>
+
+        </main>
+
+    </div>
+<script>
+let timeLeft = 120;
+
+const timer = document.getElementById("timer");
+
+const countdown = setInterval(() => {
+
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+
+    timer.textContent =
+        String(minutes).padStart(2, '0') + ":" +
+        String(seconds).padStart(2, '0');
+
+    if (timeLeft <= 0) {
+
+        clearInterval(countdown);
+
+        document.getElementById("medical-info").innerHTML = `
+            <div class="alert-card">
+                <i class="fa-solid fa-lock"></i>
+                <div>
+                    <h3>Emergency Access Expired</h3>
+                    <p>Medical information has been locked.</p>
+                </div>
+            </div>
+        `;
+
+        setTimeout(() => {
+            window.location.href = "{{ url_for('dashboard') }}";
+        }, 3000);
+
+        return;
+    }
+
+    timeLeft--;
+
+}, 1000);
+</script>
+</body>
+
+</html>

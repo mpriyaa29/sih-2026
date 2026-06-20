@@ -1,0 +1,405 @@
+
+/* =========================
+   CITIZEN REGISTRATION PAGE
+========================= */
+.navbar{
+    padding: 10px 5%;
+}
+
+.registration-section{
+    padding: 5px 5% 30px;
+    background: var(--background-color);
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.registration-container{
+    width: 100%;
+    max-width: 720px;
+    margin: auto;
+}
+
+
+/* =========================
+   LEFT SECTION
+========================= */
+
+.registration-left{
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   PAGE BADGE
+========================= */
+
+.page-badge{
+    display: inline-block;
+    background: rgba(37, 99, 235, 0.15);
+    color: var(--primary-color);
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-size: 14px;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+
+    margin: auto;
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   LEFT CONTENT
+========================= */
+
+.registration-left h1{
+    font-size: 34px;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    font-weight: 700;
+    text-align: center;
+}
+.registration-left p{
+    color: var(--text-color);
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+
+
+/* =========================
+   RIGHT SECTION
+========================= */
+
+.form-card{
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    border-radius: 28px;
+    padding: 28px;
+}
+
+
+/* =========================
+   FORM TITLE
+========================= */
+
+.form-card h2{
+    font-size: 34px;
+    margin-bottom: 35px;
+}
+
+
+/* =========================
+   FORM SECTION
+========================= */
+
+.form-section{
+    margin-bottom: 25px;
+}
+
+.form-section h3{
+    font-size: 22px;
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   INPUT GROUP
+========================= */
+
+.input-group{
+    margin-bottom: 22px;
+}
+
+.input-group label{
+    display: block;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: var(--white-color);
+}
+
+
+/* =========================
+   INPUT FIELD
+========================= */
+
+.input-field{
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.input-field i{
+    color: var(--primary-color);
+    font-size: 16px;
+}
+
+.input-field input,
+.input-field textarea{
+    width: 100%;
+    background: transparent;
+    color: var(--white-color);
+    font-size: 15px;
+}
+
+
+/* =========================
+   TEXTAREA
+========================= */
+
+.textarea-field{
+    align-items: flex-start;
+}
+
+.textarea-field textarea{
+    resize: none;
+    height: 120px;
+}
+
+
+/* =========================
+   FORM GRID
+========================= */
+
+.form-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+
+/* =========================
+   SELECT
+========================= */
+
+select{
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 15px 18px;
+    color: var(--white-color);
+    font-size: 15px;
+}
+
+
+/* =========================
+   BIOMETRIC GRID
+========================= */
+
+.biometric-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+
+/* =========================
+   BIOMETRIC CARD
+========================= */
+
+.biometric-card{
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    padding: 12px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.biometric-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.12);
+}
+
+.biometric-card i{
+    width: 45px;
+    height: 45px;
+    background: rgba(37, 99, 235, 0.15);
+    color: var(--primary-color);
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    margin-bottom: 22px;
+    font-size: 30px;
+}
+
+.biometric-card h4{
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.biometric-card p{
+    color: var(--text-color);
+    margin-bottom: 14px;
+    line-height: 1.7;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.upload-btn,
+.otp-btn,
+.register-btn{
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.upload-btn{
+    background: rgba(37, 99, 235, 0.15);
+    color: var(--primary-color);
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.upload-btn:hover{
+    background: var(--primary-color);
+    color: var(--white-color);
+}
+
+
+/* OTP */
+
+.otp-section{
+    display: flex;
+    gap: 15px;
+}
+
+.otp-input{
+    flex: 1;
+}
+
+.otp-btn{
+    background: var(--primary-color);
+    color: var(--white-color);
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.otp-btn:hover{
+    opacity: 0.9;
+}
+
+
+/* REGISTER */
+
+.register-btn{
+    width: 100%;
+    background: var(--danger-color);
+    color: var(--white-color);
+    padding: 14px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.register-btn:hover{
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+
+/* =========================
+   PLACEHOLDER
+========================= */
+
+::placeholder{
+    color: #94a3b8;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width: 1100px){
+
+    .registration-container{
+        grid-template-columns: 1fr;
+    }
+
+    
+
+}
+
+
+@media(max-width: 768px){
+
+    .registration-left h1{
+        font-size: 40px;
+    }
+
+    .form-grid,
+    .biometric-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .otp-section{
+        flex-direction: column;
+    }
+
+    .form-card{
+        padding: 30px 22px;
+    }
+
+}
+
+
+@media(max-width: 576px){
+
+    .registration-left h1{
+        font-size: 32px;
+    }
+
+    .form-card h2{
+        font-size: 24px;
+    }
+
+    .form-section h3{
+        font-size: 20px;
+    }
+
+    .biometric-card{
+        padding: 24px;
+    }
+
+}
+body{
+    overflow-x: hidden;
+}
+
+.registration-section{
+    padding-top: 20px;
+}
+
+.form-card{
+    margin-top: 30px;
+}
+
+.form-card h2{
+    text-align: center;
+}
+
+.registration-left{
+    margin-bottom: 40px;
+}

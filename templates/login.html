@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LifeLink Login</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/login.css') }}">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- GOOGLE FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- LEFT SIDE -->
+
+        <div class="left-panel">
+
+            <div class="brand">
+
+                <h1>
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    LifeLink
+                </h1>
+
+                <p>
+                    AI Powered Emergency Response System
+                </p>
+
+            </div>
+
+            <div class="hero-content">
+
+                <span class="badge">
+                    Emergency Responder Portal
+                </span>
+
+                <h2>
+                    Secure Emergency Coordination Platform
+                </h2>
+
+                <p>
+                    Fast, secure and intelligent access for
+                    ambulance staff, police officers,
+                    and emergency responders.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+
+        <div class="right-panel">
+
+            <div class="login-box">
+
+                <h2>Emergency Login</h2>
+
+                <p class="subtitle">
+                    Authorized personnel only
+                </p>
+
+                <form action="{{ url_for('dashboard') }}"
+                method="GET">
+
+                    <!-- ROLE -->
+
+                    <div class="input-group">
+
+                        <label>Role</label>
+
+                        <div class="input-field">
+
+                            <i class="fa-solid fa-user-shield"></i>
+
+                            <select required>
+
+                                <option value="">
+                                    Select Role
+                                </option>
+
+                                <option>
+                                    Police Officer
+                                </option>
+
+                                <option>
+                                    Ambulance Staff
+                                </option>
+
+                                <option>
+                                    Admin
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <!-- EMPLOYEE ID -->
+
+                    <div class="input-group">
+
+                        <label>Employee ID</label>
+
+                        <div class="input-field">
+
+                            <i class="fa-solid fa-id-card"></i>
+
+                            <input
+                            type="text"
+                            placeholder="Enter Employee ID"
+                            required>
+
+                        </div>
+
+                    </div>
+
+                    <!-- PASSWORD -->
+
+                    <div class="input-group">
+
+                        <label>Password</label>
+
+                        <div class="input-field">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input
+                            type="password"
+                            placeholder="Enter Password"
+                            required>
+
+                        </div>
+
+                    </div>
+
+                    <!-- LOGIN BUTTON -->
+
+                    <button
+                    class="login-btn"
+                    type="submit">
+
+                        <i class="fa-solid fa-right-to-bracket"></i>
+
+                        Login Securely
+
+                    </button>
+
+                    <!-- BACK -->
+
+                    <p class="back-link">
+
+                        <a href="{{ url_for('home') }}">
+
+                            ← Back to Home
+
+                        </a>
+
+                    </p>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

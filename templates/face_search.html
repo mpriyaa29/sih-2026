@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Recognition Search</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Face Recognition Emergency Access</h1>
+
+    <form method="POST"
+    enctype="multipart/form-data">
+
+        <input type="file"
+        name="search_image">
+
+        <button type="submit">
+            Identify Citizen
+        </button>
+
+    </form>
+
+    {% if citizen %}
+
+    <div style="
+        margin-top:30px;
+        border:1px solid #ccc;
+        padding:20px;
+        border-radius:10px;
+    ">
+
+        <img
+        src="{{ url_for('static',
+        filename='uploads/' + citizen.face_image) }}"
+        width="150">
+
+        <h2>{{ citizen.fullname }}</h2>
+
+        <p><b>Blood Group:</b>
+        {{ citizen.blood_group }}</p>
+
+        <p><b>Allergies:</b>
+        {{ citizen.allergies }}</p>
+
+        <p><b>Diseases:</b>
+        {{ citizen.diseases }}</p>
+
+        <p><b>Emergency Contact:</b>
+        {{ citizen.emergency_contact }}</p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
