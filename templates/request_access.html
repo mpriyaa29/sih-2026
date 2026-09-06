@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Request Access</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static',
+    filename='css/doctor.css') }}">
+
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Request Patient Access</h2>
+
+    <form method="POST">
+
+        <label>Citizen ID</label>
+
+        <input
+        type="number"
+        name="citizen_id"
+        required>
+
+        <br><br>
+
+        <button type="submit">
+
+            Send Request
+
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

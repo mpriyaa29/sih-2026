@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Patient Record</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',
+filename='css/doctor.css') }}">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+<h2>Patient Record</h2>
+
+<p>
+
+Name :
+{{ citizen.fullname }}
+
+</p>
+
+<p>
+
+Blood Group :
+{{ citizen.blood_group }}
+
+</p>
+
+<p>
+
+Allergies :
+{{ record.allergies }}
+
+</p>
+
+<p>
+
+Conditions :
+{{ record.conditions }}
+
+</p>
+
+<p>
+
+Medications :
+{{ record.medications }}
+
+</p>
+
+</div>
+
+</body>
+</html>

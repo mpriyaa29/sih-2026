@@ -331,3 +331,30 @@ img{
     background: var(--primary-color);
     border-radius: 10px;
 }
+
+
+.emergency-consent{
+    margin-top:25px;
+    margin-bottom:25px;
+    padding:20px;
+    border-radius:12px;
+    background:#1e2b44;
+    border:1px solid #2f4f8f;
+}
+
+.checkbox-container{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    color:white;
+    font-size:15px;
+    line-height:1.6;
+    cursor:pointer;
+}
+
+.checkbox-container input{
+    width:18px;
+    height:18px;
+    margin-top:3px;
+    accent-color:#2d6cff;
+}

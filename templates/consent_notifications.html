@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>
+Consent Requests
+</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',
+filename='css/doctor.css') }}">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+<h2>
+Pending Requests
+</h2>
+
+{% for request in requests %}
+
+<div style="
+padding:15px;
+margin-bottom:10px;
+border:1px solid #ddd;
+">
+
+<p>
+
+Doctor Request
+for Citizen ID:
+
+{{ request.citizen_id }}
+
+</p>
+
+{% if request.status == "Pending" %}
+
+<a href="/approve-request/{{ request.id }}"
+   class="approve-btn">
+   Approve
+</a>
+
+<a href="/deny-request/{{ request.id }}"
+   class="deny-btn">
+   Deny
+</a>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>
+
+<style>
+    .approve-btn{
+    background:#22c55e;
+    color:white;
+    padding:10px 20px;
+    border-radius:8px;
+    text-decoration:none;
+    margin-right:10px;
+}
+
+.deny-btn{
+    background:#ef4444;
+    color:white;
+    padding:10px 20px;
+    border-radius:8px;
+    text-decoration:none;
+}
+</style>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Prescription Check</title>
+</head>
+<body>
+
+<h1>Upload Prescription</h1>
+
+<form method="POST">
+
+    <label>Citizen ID</label>
+
+    <input
+    type="number"
+    name="citizen_id"
+    required>
+
+    <br><br>
+
+    <label>Prescription</label>
+
+    <textarea
+    name="prescription"
+    rows="8"
+    cols="60"
+    required></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Analyze Prescription
+    </button>
+
+</form>
+
+<!-- ADD RESULT SECTION HERE -->
+
+{% if result %}
+
+<h2>{{ result[0] }}</h2>
+
+<ul>
+
+{% for item in result[1] %}
+
+<li>{{ item }}</li>
+
+{% endfor %}
+
+</ul>
+
+{% endif %}
+
+</body>
+</html>
+
+</body>
+</html>

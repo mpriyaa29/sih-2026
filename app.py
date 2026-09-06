@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from twilio.rest import Client
 from flask import redirect, url_for
 from flask import jsonify
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -18,6 +19,8 @@ account_sid = "ACf0b79eea25af113f9545c326d6edec86"
 auth_token = "69d0e5cd5d21a1c56b951b1481bb05da"
 
 twilio_number = "+15734554374"
+
+BASE_URL = "https://epidermal-tactics-clarinet.ngrok-free.dev"
 
 # Upload Folder
 UPLOAD_FOLDER = 'static/uploads'
@@ -81,6 +84,125 @@ class MedicalRecord(db.Model):
     medical_report = db.Column(db.String(200))
 
 
+class Doctor(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    doctor_id = db.Column(
+        db.String(50),
+        unique=True
+    )
+
+    name = db.Column(
+        db.String(100)
+    )
+
+    designation = db.Column(
+        db.String(100)
+    )
+
+    password = db.Column(
+        db.String(200)
+    )
+
+    blocked_until = db.Column(
+        db.String(100)
+    )
+
+    deny_count = db.Column(
+        db.Integer,
+        default=0
+    )
+
+class ConsentRequest(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    citizen_id = db.Column(
+        db.Integer,
+        db.ForeignKey("citizen.id")
+    )
+
+    doctor_id = db.Column(
+        db.Integer,
+        db.ForeignKey("doctor.id")
+    )
+
+    status = db.Column(
+        db.String(20),
+        default="Pending"
+    )
+
+    request_time = db.Column(
+        db.String(100)
+    )
+
+class Prescription(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    citizen_id = db.Column(
+        db.Integer,
+        db.ForeignKey("citizen.id")
+    )
+
+    doctor_id = db.Column(
+        db.Integer,
+        db.ForeignKey("doctor.id")
+    )
+
+    medicine = db.Column(
+        db.String(500)
+    )
+
+    dosage = db.Column(
+        db.String(200)
+    )
+
+    notes = db.Column(
+        db.String(500)
+    )
+
+    created_at = db.Column(
+        db.String(100)
+    )
+
+class AuditLog(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    doctor_name = db.Column(
+        db.String(100)
+    )
+
+    designation = db.Column(
+        db.String(100)
+    )
+
+    patient_name = db.Column(
+        db.String(100)
+    )
+
+    access_mode = db.Column(
+        db.String(50)
+    )
+
+    access_time = db.Column(
+        db.String(100)
+    )
+
 # =========================
 # HOME PAGE
 # =========================
@@ -95,8 +217,69 @@ def home():
 # LOGIN PAGE
 # =========================
 
-@app.route("/login")
+# =========================
+# EMERGENCY LOGIN
+# =========================
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
+
+    # Hard-coded emergency responder credentials
+    USERS = {
+
+        "Police Officer": {
+            "employee_id": "POL001",
+            "password": "Police@123"
+        },
+
+        "Ambulance Staff": {
+            "employee_id": "AMB001",
+            "password": "Ambulance@123"
+        },
+
+        "Admin": {
+            "employee_id": "ADM001",
+            "password": "Admin@123"
+        }
+
+    }
+
+    if request.method == "POST":
+
+        role = request.form.get("role")
+        employee_id = request.form.get("employee_id")
+        password = request.form.get("password")
+
+        # Check whether selected role exists
+        if role not in USERS:
+
+            return render_template(
+                "login.html",
+                error="Please select a valid role."
+            )
+
+        user = USERS[role]
+
+        # Verify Employee ID and Password
+        if (
+            employee_id == user["employee_id"]
+            and password == user["password"]
+        ):
+
+            # Store login information in session
+            session["logged_in"] = True
+            session["role"] = role
+            session["employee_id"] = employee_id
+
+            return redirect(
+                url_for("dashboard")
+            )
+
+        # Invalid credentials
+        return render_template(
+            "login.html",
+            error="Invalid Employee ID or Password."
+        )
 
     return render_template("login.html")
 
@@ -110,53 +293,164 @@ def register():
 
     if request.method == "POST":
 
-        fullname = request.form['fullname']
-        age = request.form['age']
-        gender = request.form['gender']
+        try:
 
-        blood_group = request.form['blood_group']
-        allergies = request.form['allergies']
-        diseases = request.form['diseases']
+            fullname = request.form["fullname"]
+            age = request.form["age"]
+            gender = request.form["gender"]
 
-        emergency_contact = request.form['emergency_contact']
-        fingerprint_id = request.form['fingerprint_id']
+            blood_group = request.form["blood_group"]
+            allergies = request.form["allergies"]
+            diseases = request.form["diseases"]
 
-        # Upload Face Image
-        file = request.files['face_image']
+            emergency_contact = request.form["emergency_contact"]
 
-        filename = secure_filename(file.filename)
+            # =========================
+            # FINGERPRINT ID
+            # =========================
 
-        file.save(
-            os.path.join(
-                app.config['UPLOAD_FOLDER'],
-                filename
+            fingerprint_id = int(
+                request.form["fingerprint_id"]
             )
-        )
 
-        # Save Citizen Data
-        new_citizen = Citizen(
+            # =========================
+            # CHECK DUPLICATE ID
+            # =========================
 
-    fullname=fullname,
-    age=age,
-    gender=gender,
+            existing_citizen = Citizen.query.filter_by(
+                fingerprint_id=fingerprint_id
+            ).first()
 
-    blood_group=blood_group,
-    allergies=allergies,
-    diseases=diseases,
+            if existing_citizen:
 
-    emergency_contact=emergency_contact,
+                return f"""
+                <script>
+                    alert("Fingerprint ID {fingerprint_id} is already registered.");
+                    window.history.back();
+                </script>
+                """
 
-    face_image=filename,
+            # =========================
+            # FACE IMAGE
+            # =========================
 
-    fingerprint_id=fingerprint_id
-)
+            file = request.files["face_image"]
 
-        db.session.add(new_citizen)
-        db.session.commit()
+            if not file or file.filename == "":
+                return "Face image is required."
 
-        return render_template("success.html")
+            filename = secure_filename(
+                file.filename
+            )
 
-    return render_template("register.html")
+            file.save(
+                os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    filename
+                )
+            )
+
+            # =========================
+            # CREATE CITIZEN
+            # =========================
+
+            new_citizen = Citizen(
+
+                fullname=fullname,
+
+                age=age,
+
+                gender=gender,
+
+                blood_group=blood_group,
+
+                allergies=allergies,
+
+                diseases=diseases,
+
+                emergency_contact=emergency_contact,
+
+                face_image=filename,
+
+                fingerprint_id=fingerprint_id
+            )
+
+            db.session.add(new_citizen)
+
+            db.session.commit()
+
+            return render_template(
+                "success.html"
+            )
+
+        except Exception as e:
+
+            db.session.rollback()
+
+            print(
+                "Registration Error:",
+                e
+            )
+
+            return f"Registration failed: {e}"
+
+    return render_template(
+        "register.html"
+    )
+
+# @app.route("/register", methods=["GET", "POST"])
+# def register():
+
+#     if request.method == "POST":
+
+#         fullname = request.form['fullname']
+#         age = request.form['age']
+#         gender = request.form['gender']
+
+#         blood_group = request.form['blood_group']
+#         allergies = request.form['allergies']
+#         diseases = request.form['diseases']
+
+#         emergency_contact = request.form['emergency_contact']
+#         fingerprint_id = request.form['fingerprint_id']
+
+#         # Upload Face Image
+#         file = request.files['face_image']
+
+#         filename = secure_filename(file.filename)
+
+#         file.save(
+#             os.path.join(
+#                 app.config['UPLOAD_FOLDER'],
+#                 filename
+#             )
+#         )
+
+#         # Save Citizen Data
+#         new_citizen = Citizen(
+
+#     fullname=fullname,
+#     age=age,
+#     gender=gender,
+
+#     blood_group=blood_group,
+#     allergies=allergies,
+#     diseases=diseases,
+
+#     emergency_contact=emergency_contact,
+
+#     face_image=filename,
+
+#     fingerprint_id=fingerprint_id
+# )
+
+
+#         db.session.add(new_citizen)
+#         db.session.commit()
+
+#         return render_template("success.html")
+
+#     return render_template("register.html")
 
 
 # =========================
@@ -268,61 +562,61 @@ def fingerprint_search():
 
         return str(e)
 
-@app.route("/register-fingerprint")
-def register_fingerprint():
+# @app.route("/register-fingerprint")
+# def register_fingerprint():
 
-    try:
+#     try:
 
-        # Find next available fingerprint ID
-        last_citizen = Citizen.query.order_by(
-            Citizen.fingerprint_id.desc()
-        ).first()
+#         # Find next available fingerprint ID
+#         last_citizen = Citizen.query.order_by(
+#             Citizen.fingerprint_id.desc()
+#         ).first()
 
-        if last_citizen and last_citizen.fingerprint_id:
-            fingerprint_id = last_citizen.fingerprint_id + 1
-        else:
-            fingerprint_id = 1
+#         if last_citizen and last_citizen.fingerprint_id:
+#             fingerprint_id = last_citizen.fingerprint_id + 1
+#         else:
+#             fingerprint_id = 1
 
-        arduino = serial.Serial(
-            'COM13',
-            9600,
-            timeout=60
-        )
+#         arduino = serial.Serial(
+#             'COM13',
+#             9600,
+#             timeout=60
+#         )
 
-        time.sleep(2)
+#         time.sleep(2)
 
-        # Send ID to Arduino
-        arduino.write(
-            f"{fingerprint_id}\n".encode()
-        )
+#         # Send ID to Arduino
+#         arduino.write(
+#             f"{fingerprint_id}\n".encode()
+#         )
 
-        while True:
+#         while True:
 
-            line = arduino.readline().decode().strip()
+#             line = arduino.readline().decode().strip()
 
-            print(line)
+#             print(line)
 
-            if "Stored!" in line:
+#             if "Stored!" in line:
 
-                arduino.close()
+#                 arduino.close()
 
-                return jsonify({
+#                 return jsonify({
 
-                    "success": True,
+#                     "success": True,
 
-                    "fingerprint_id": fingerprint_id
+#                     "fingerprint_id": fingerprint_id
 
-                })
+#                 })
 
-    except Exception as e:
+#     except Exception as e:
 
-        return jsonify({
+#         return jsonify({
 
-            "success": False,
+#             "success": False,
 
-            "error": str(e)
+#             "error": str(e)
 
-        })
+#         })
 
 # =========================
 # DASHBOARD PAGE
@@ -610,13 +904,425 @@ def authority():
 @app.route("/logs")
 def logs():
 
-    return render_template("logs.html")
+    logs = AuditLog.query.order_by(
+        AuditLog.id.desc()
+    ).all()
+
+    return render_template(
+
+        "logs.html",
+
+        logs=logs
+
+    )
 
 @app.route("/alerts")
 def alerts():
 
     return render_template("alerts.html")
 
+
+@app.route(
+    "/doctor-login",
+    methods=["GET","POST"]
+)
+def doctor_login():
+
+    if request.method == "POST":
+
+        doctor_id = request.form["doctor_id"]
+
+        password = request.form["password"]
+
+        doctor = Doctor.query.filter_by(
+            doctor_id=doctor_id
+        ).first()
+
+        if doctor:
+
+            # Check if blocked
+
+            if doctor.blocked_until:
+
+                blocked_time = datetime.fromisoformat(
+                    doctor.blocked_until
+                )
+
+                if blocked_time > datetime.now():
+
+                    return (
+                        "Doctor account blocked "
+                        "for 24 hours due to "
+                        "multiple denied requests."
+                    )
+
+            # Check password
+
+            if doctor.password == password:
+
+                session["doctor_id"] = doctor.id
+
+                return redirect(
+                    url_for(
+                        "doctor_dashboard"
+                    )
+                )
+
+        return "Invalid Credentials"
+
+    return render_template(
+        "doctor_login.html"
+    )
+
+@app.route("/doctor-dashboard")
+def doctor_dashboard():
+
+    if "doctor_id" not in session:
+
+        return redirect(
+            url_for(
+                "doctor_login"
+            )
+        )
+
+    return render_template(
+        "doctor_dashboard.html"
+    )
+
+@app.route(
+    "/request-access",
+    methods=["GET","POST"]
+)
+def request_access():
+
+    if "doctor_id" not in session:
+
+        return redirect(
+            url_for(
+                "doctor_login"
+            )
+        )
+
+    if request.method == "POST":
+
+        citizen_id = request.form["citizen_id"]
+
+        citizen = Citizen.query.get(
+            citizen_id
+        )
+
+        if not citizen:
+
+            return "Citizen Not Found"
+
+        new_request = ConsentRequest(
+
+            citizen_id=citizen_id,
+
+            doctor_id=session[
+                "doctor_id"
+            ],
+
+            status="Pending",
+
+            request_time=str(
+                datetime.now()
+            )
+        )
+
+        db.session.add(
+            new_request
+        )
+
+        db.session.commit()
+
+        approve_link = (
+            f"{BASE_URL}/approve-request/{new_request.id}"
+        )
+
+        deny_link = (
+            f"{BASE_URL}/deny-request/{new_request.id}"
+        )
+
+        client = Client(
+            account_sid,
+            auth_token
+        )
+
+        client.messages.create(
+
+            body=f"""
+LifeLink Consent Request
+
+Doctor is requesting access
+to Citizen ID {citizen_id}
+
+Approve:
+{approve_link}
+
+Deny:
+{deny_link}
+""",
+
+            from_=twilio_number,
+
+            to="+91" + citizen.emergency_contact
+
+        )
+
+        return "SMS sent successfully"
+
+    return render_template(
+        "request_access.html"
+    )
+
+@app.route(
+    "/view-consents"
+)
+def view_consents():
+
+    requests = ConsentRequest.query.filter_by(
+        status="Pending"
+    ).all()
+
+    return render_template(
+        "consent_notifications.html",
+        requests=requests
+    )
+
+@app.route("/approve-request/<int:id>")
+def approve_request(id):
+
+    request_data = ConsentRequest.query.get(id)
+
+    request_data.status = "Approved"
+
+    doctor = Doctor.query.get(
+        request_data.doctor_id
+    )
+
+    # Reset deny count after approval
+    doctor.deny_count = 0
+
+    db.session.commit()
+
+    return redirect(
+        url_for("view_consents")
+    )
+
+@app.route(
+    "/deny-request/<int:id>"
+)
+def deny_request(id):
+
+    request_data = ConsentRequest.query.get(id)
+
+    request_data.status = "Denied"
+
+    doctor = Doctor.query.get(
+        request_data.doctor_id
+    )
+
+    doctor.deny_count += 1
+
+    if doctor.deny_count >= 3:
+
+        doctor.blocked_until = str(
+            datetime.now() +
+            timedelta(hours=24)
+        )
+
+        doctor.deny_count = 0
+
+    db.session.commit()
+
+    return redirect(
+        url_for(
+            "view_consents"
+        )
+    )
+
+
+@app.route("/my-requests")
+def my_requests():
+
+    if "doctor_id" not in session:
+
+        return redirect(
+            url_for(
+                "doctor_login"
+            )
+        )
+
+    requests = ConsentRequest.query.filter_by(
+
+        doctor_id=session[
+            "doctor_id"
+        ]
+
+    ).all()
+
+    return render_template(
+
+        "my_requests.html",
+
+        requests=requests
+
+    )
+
+@app.route(
+    "/patient-record/<int:citizen_id>"
+)
+def patient_record(citizen_id):
+
+    if "doctor_id" not in session:
+
+        return redirect(
+            url_for(
+                "doctor_login"
+            )
+        )
+
+    citizen = Citizen.query.get(
+        citizen_id
+    )
+
+    record = MedicalRecord.query.filter_by(
+        citizen_id=citizen_id
+    ).first()
+
+    doctor = Doctor.query.get(
+        session["doctor_id"]
+    )
+
+    log = AuditLog(
+
+        doctor_name=doctor.name,
+
+        designation=doctor.designation,
+
+        patient_name=citizen.fullname,
+
+        access_mode="Consent",
+
+        access_time=str(
+            datetime.now()
+        )
+    )
+
+    db.session.add(log)
+
+    db.session.commit()
+
+    return render_template(
+
+        "patient_record.html",
+
+        citizen=citizen,
+
+        record=record
+
+    )
+
+@app.route(
+    "/upload-prescription",
+    methods=["GET", "POST"]
+)
+def upload_prescription():
+
+    result = None
+
+    if request.method == "POST":
+
+        citizen_id = request.form["citizen_id"]
+
+        prescription = request.form["prescription"].lower()
+
+        record = MedicalRecord.query.filter_by(
+            citizen_id=citizen_id
+        ).first()
+
+        if not record:
+
+            result = (
+                "Patient Record Not Found",
+                []
+            )
+
+        else:
+
+            warnings = []
+
+            allergies = (
+                record.allergies or ""
+            ).lower()
+
+            medications = (
+                record.medications or ""
+            ).lower()
+
+            conditions = (
+                record.conditions or ""
+            ).lower()
+
+            # Check allergies
+
+            if "penicillin" in prescription:
+
+                if "allergy" in allergies:
+
+                    warnings.append(
+                        "Patient has allergy history."
+                    )
+
+            # Check diabetes
+
+            if "diabetes" in conditions:
+
+                if "steroid" in prescription:
+
+                    warnings.append(
+                        "Steroids may affect diabetic patient."
+                    )
+
+            # Check duplicate medicines
+
+            prescribed_meds = [
+                x.strip()
+                for x in prescription.split(",")
+            ]
+
+            existing_meds = [
+                x.strip()
+                for x in medications.split(",")
+            ]
+
+            for med in prescribed_meds:
+
+                if med.lower() in existing_meds:
+
+                    warnings.append(
+                        f"{med} is already being taken."
+                    )
+
+            if warnings:
+
+                result = (
+                    "Not Suitable",
+                    warnings
+                )
+
+            else:
+
+                result = (
+                    "Suitable",
+                    ["No conflicts found."]
+                )
+
+    return render_template(
+        "upload_prescription.html",
+        result=result
+    )
 
 # =========================
 # CREATE DATABASE
@@ -626,10 +1332,49 @@ with app.app_context():
 
     db.create_all()
 
-
 # =========================
 # RUN APP
 # =========================
+
+with app.app_context():
+
+    doctor = Doctor.query.filter_by(
+        doctor_id="DOC001"
+    ).first()
+
+    if not doctor:
+
+        new_doctor = Doctor(
+            doctor_id="DOC001",
+            name="Dr Kumar",
+            designation="Emergency Physician",
+            password="Doctor@123"
+        )
+
+        db.session.add(new_doctor)
+        db.session.commit()
+
+        print("Doctor Created")
+
+with app.app_context():
+
+    doctor = Doctor.query.filter_by(
+        doctor_id="DOC002"
+    ).first()
+
+    if not doctor:
+
+        new_doctor = Doctor(
+            doctor_id="DOC002",
+            name="Dr Sharma",
+            designation="Cardiologist",
+            password="Doctor@456"
+        )
+
+        db.session.add(new_doctor)
+        db.session.commit()
+
+        print("Doctor Created")
 
 if __name__ == "__main__":
 

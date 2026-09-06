@@ -85,7 +85,7 @@ href="{{ url_for('static', filename='css/citizen.css') }}">
                     <h2>Create Emergency Profile</h2>
 
                     <form
-    action="http://127.0.0.1:5000/register"
+    action="{{ url_for('register') }}"
     method="POST"
     enctype="multipart/form-data">
 
@@ -339,22 +339,29 @@ href="{{ url_for('static', filename='css/citizen.css') }}">
 
                 <p>Connect R307 fingerprint sensor</p>
 
-                <button
-    type="button"
-    id="scanFingerprintBtn"
-    class="upload-btn">
-
-    Scan Fingerprint
-
-</button>
-
                 <div class="input-group">
 
-    <input
-    type="hidden"
-    id="fingerprint_id"
-    name="fingerprint_id"
-    required>
+    <label>Fingerprint ID</label>
+
+    <div class="input-field">
+
+        <i class="fa-solid fa-fingerprint"></i>
+
+        <input
+            type="number"
+            id="fingerprint_id"
+            name="fingerprint_id"
+            min="1"
+            max="127"
+            placeholder="Enter registered fingerprint ID"
+            required>
+
+    </div>
+
+    <small>
+    Enter the ID assigned by Arduino when you enrolled this fingerprint.
+    Example: If Arduino stored it as ID #1, enter 1.
+</small>
 
 </div>
 
@@ -363,6 +370,23 @@ href="{{ url_for('static', filename='css/citizen.css') }}">
         </div>
 
     </div>
+
+    <div class="emergency-consent">
+
+    <label class="checkbox-container">
+
+        <input
+        type="checkbox"
+        name="emergency_access"
+        value="yes">
+
+        <span class="checkmark"></span>
+
+        I consent to allow emergency access to my medical records through Face Recognition and Fingerprint Authentication during critical medical emergencies.
+
+    </label>
+
+</div>
 
 
     <!-- SECURITY -->

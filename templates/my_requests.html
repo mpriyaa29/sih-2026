@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>My Access Requests</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static',
+    filename='css/doctor.css') }}">
+
+</head>
+
+<body>
+
+<div class="requests-page">
+
+    <div class="page-header">
+
+        <h1>My Access Requests</h1>
+
+        <p>
+            Track all patient access requests and approval status.
+        </p>
+
+    </div>
+
+    <div class="request-grid">
+
+        {% for request in requests %}
+
+        <div class="request-card">
+
+            <div class="card-top">
+
+                <h3>
+                    Citizen ID #{{ request.citizen_id }}
+                </h3>
+
+                {% if request.status == "Approved" %}
+
+                <span class="status approved">
+                    Approved
+                </span>
+
+                {% elif request.status == "Denied" %}
+
+                <span class="status denied">
+                    Denied
+                </span>
+
+                {% else %}
+
+                <span class="status pending">
+                    Pending
+                </span>
+
+                {% endif %}
+
+            </div>
+
+            <div class="card-body">
+
+                <p>
+                    Request ID :
+                    {{ request.id }}
+                </p>
+
+            </div>
+
+            {% if request.status == "Approved" %}
+
+            <a
+            href="/patient-record/{{ request.citizen_id }}"
+            class="view-btn">
+
+                View Medical Record
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+<style>
+    .requests-page{
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:50px;
+
+}
+
+.page-header{
+
+    text-align:center;
+
+    margin-bottom:40px;
+
+}
+
+.page-header h1{
+
+    color:white;
+
+    font-size:48px;
+
+    margin-bottom:10px;
+
+}
+
+.page-header p{
+
+    color:#94a3b8;
+
+    font-size:18px;
+
+}
+
+.request-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(320px,1fr));
+
+    gap:25px;
+
+}
+
+.request-card{
+
+    background:#0d214f;
+
+    border:1px solid rgba(59,130,246,.25);
+
+    border-radius:18px;
+
+    padding:25px;
+
+    transition:.3s;
+
+}
+
+.request-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.3);
+
+}
+
+.card-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.card-top h3{
+
+    color:white;
+
+    margin:0;
+
+}
+
+.card-body{
+
+    color:#cbd5e1;
+
+    margin-bottom:20px;
+
+}
+
+.status{
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+.approved{
+
+    background:#16a34a;
+
+    color:white;
+
+}
+
+.denied{
+
+    background:#dc2626;
+
+    color:white;
+
+}
+
+.pending{
+
+    background:#f59e0b;
+
+    color:white;
+
+}
+
+.view-btn{
+
+    display:block;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+}
+
+.view-btn:hover{
+
+    background:#3b82f6;
+
+}
+</style>
+</body>
+</html>
