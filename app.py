@@ -90,15 +90,31 @@ def analyze_image_with_gemini_vision(image_path):
         print("Gemini Vision OCR Exception:", e)
         return None
 
+LANG_MAP = {
+    "en-IN": "English (India)",
+    "hi-IN": "Hindi (हिंदी)",
+    "ta-IN": "Tamil (தமிழ்)",
+    "te-IN": "Telugu (తెలుగు)",
+    "kn-IN": "Kannada (ಕನ್ನಡ)",
+    "ml-IN": "Malayalam (മലയാളം)",
+    "mr-IN": "Marathi (मराठी)",
+    "bn-IN": "Bengali (বাংলা)",
+    "gu-IN": "Gujarati (ગુજરાતી)"
+}
+
 def generate_adaptive_questions(intake_data, citizen_name):
     """
-    Generates 4 adaptive questions taking patient symptoms AND scanned document OCR data into consideration.
+    Generates 4 adaptive questions taking patient symptoms, scanned document OCR data, AND preferred language into consideration.
     """
     ocr_info = intake_data.get('ocr_text', 'No document uploaded.')
+    lang_code = intake_data.get('preferred_language', 'en-IN')
+    lang_name = LANG_MAP.get(lang_code, "English")
+
     prompt = f"""
     You are an expert AYUSH & Clinical Triage AI assistant.
     Patient Profile:
     - Name: {citizen_name}
+    - Preferred Language: {lang_name} ({lang_code})
     - Illness / Primary Complaint: {intake_data.get('illness', 'Unspecified')}
     - Symptoms: {intake_data.get('symptoms', 'Unspecified')}
     - Reported Severity: {intake_data.get('severity', 'Moderate')}
@@ -111,6 +127,7 @@ def generate_adaptive_questions(intake_data, citizen_name):
     CRITICAL INSTRUCTION:
     Analyze the patient's reported symptoms AND the scanned prescription / lab test documents above (such as prescribed antibiotics, lipid profile, cholesterol levels, lab test numbers, or medical history notes).
     Generate exactly 4 adaptive, highly relevant clinical assessment questions that take the scanned medical document findings AND patient symptoms into account to determine disease severity, medication response, and clinical risk.
+    IMPORTANT: Write the questions in the patient's preferred language ({lang_name}). If the language is not English, provide the question in {lang_name} followed by the English translation in parentheses.
 
     Return JSON only strictly formatted as:
     {{"questions": ["Question 1", "Question 2", "Question 3", "Question 4"]}}
@@ -130,15 +147,18 @@ def generate_adaptive_questions(intake_data, citizen_name):
 
 def generate_clinical_report(intake_data, citizen_name, citizen_age, qa_pairs):
     """
-    Generates comprehensive AI Diagnostic Report & Open Page Summary incorporating document findings and 4 answered questions.
+    Generates comprehensive AI Diagnostic Report & Open Page Summary incorporating document findings, 4 answered questions, and language context.
     """
     qa_str = "\n".join([f"Q: {q}\nA: {a}" for q, a in qa_pairs])
     ocr_info = intake_data.get('ocr_text', 'No document uploaded.')
+    lang_code = intake_data.get('preferred_language', 'en-IN')
+    lang_name = LANG_MAP.get(lang_code, "English")
     
     prompt = f"""
     You are an expert AYUSH Clinical AI Specialist and Triage System.
     Patient Profile:
     - Name: {citizen_name} (Age: {citizen_age})
+    - Preferred Language: {lang_name} ({lang_code})
     - Primary Complaints / Illness: {intake_data.get('illness', '')}
     - Symptoms: {intake_data.get('symptoms', '')}
     - Initial Severity: {intake_data.get('severity', 'Moderate')}

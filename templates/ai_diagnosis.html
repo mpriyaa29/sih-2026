@@ -288,7 +288,7 @@
         }
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        recognition.lang = 'en-IN';
+        recognition.lang = "{{ intake_data.get('preferred_language', 'en-IN') }}";
         recognition.interimResults = false;
         
         const targetInput = document.getElementById(targetId);
