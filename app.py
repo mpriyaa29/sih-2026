@@ -258,24 +258,43 @@ twilio_number = "+15734554374"
 BASE_URL = "https://epidermal-tactics-clarinet.ngrok-free.dev"
 
 # Upload Folder
-UPLOAD_FOLDER = 'static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+if os.environ.get('VERCEL'):
+    UPLOAD_FOLDER = '/tmp/uploads'
+else:
+    UPLOAD_FOLDER = 'static/uploads'
 
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+try:
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+except Exception:
+    pass
 
 # Database Configuration
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+orig_db = os.path.join(BASE_DIR, 'instance', 'lifelink.db')
 
-db_path = os.path.join(
-    BASE_DIR,
-    'instance',
-    'lifelink.db'
-)
+if os.environ.get('VERCEL'):
+    import shutil
+    db_path = '/tmp/lifelink.db'
+    if not os.path.exists(db_path) and os.path.exists(orig_db):
+        try:
+            shutil.copyfile(orig_db, db_path)
+        except Exception as e:
+            print("Vercel DB Copy Exception:", e)
+else:
+    db_path = orig_db
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+with app.app_context():
+    try:
+        db.create_all()
+    except Exception as e:
+        print("DB Init Warning:", e)
+
 
 # =========================
 # DATABASE MODEL
