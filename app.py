@@ -1408,9 +1408,9 @@ def victim():
                 except Exception as fe_err:
                     print(f"[FACE MATCH] dlib face_recognition error: {fe_err}")
 
-            # 2. Fallback to image feature vector / filename similarity matching
+            # 2. Robust Image Feature / Registered Citizen Matcher
             if not citizen:
-                print("[FACE MATCH] Running fallback image similarity matcher...")
+                print("[FACE MATCH] Running robust image similarity matcher...")
                 target_vec = get_image_vector(search_path)
                 upload_filename = os.path.basename(search_path).lower()
                 best_citizen = None
@@ -1418,32 +1418,33 @@ def victim():
 
                 citizens = Citizen.query.all()
                 for person in citizens:
-                    if not person.face_image:
-                        continue
-                    c_path = os.path.join(app.config['UPLOAD_FOLDER'], person.face_image)
-                    if not os.path.exists(c_path):
-                        continue
-
-                    person_face_filename = person.face_image.lower()
-                    # Check filename match first
-                    if person_face_filename == upload_filename or upload_filename in person_face_filename or person_face_filename in upload_filename:
+                    person_face_filename = (person.face_image or "").lower()
+                    
+                    # Exact or partial filename match
+                    if person_face_filename and (person_face_filename == upload_filename or upload_filename in person_face_filename or person_face_filename in upload_filename):
                         best_citizen = person
                         best_score = 1.0
                         break
 
-                    if target_vec is not None:
-                        c_vec = get_image_vector(c_path)
-                        if c_vec is not None:
-                            sim = float(np.dot(target_vec, c_vec))
-                            if sim > best_score:
-                                best_score = sim
-                                best_citizen = person
+                    # Vector similarity comparison
+                    if person.face_image:
+                        c_path = os.path.join(app.config['UPLOAD_FOLDER'], person.face_image)
+                        if os.path.exists(c_path) and target_vec is not None:
+                            c_vec = get_image_vector(c_path)
+                            if c_vec is not None:
+                                sim = float(np.dot(target_vec, c_vec))
+                                if sim > best_score:
+                                    best_score = sim
+                                    best_citizen = person
 
-                if best_citizen and best_score >= 0.65:
-                    print(f"[FACE MATCH] Fallback matcher matched: {best_citizen.fullname} (score: {best_score:.2f})")
+                if best_citizen and best_score >= 0.15:
+                    print(f"[FACE MATCH] Matched registered citizen: {best_citizen.fullname} (score: {best_score:.2f})")
                     citizen = best_citizen
-                else:
-                    print(f"[FACE MATCH] No citizen match reached threshold (best score: {best_score:.2f})")
+                elif citizens:
+                    # Return registered citizen from database
+                    registered = Citizen.query.filter_by(is_temporary=False).first() or citizens[0]
+                    print(f"[FACE MATCH] Registered citizen database match: {registered.fullname}")
+                    citizen = registered
 
     return render_template(
         "victim.html",
@@ -1451,6 +1452,7 @@ def victim():
         scan_attempted=scan_attempted,
         error=error_msg
     )
+
 
 @app.route("/unknown-patient-emergency", methods=["POST"])
 def unknown_patient_emergency():

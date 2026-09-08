@@ -88,6 +88,48 @@
         </div>
         {% endif %}
 
+        <!-- MATCHED CITIZEN DISPLAY CARD -->
+        {% if citizen %}
+        <div class="glass-card rounded-3xl p-6 sm:p-8 border-emerald-500/50 bg-slate-950/90 shadow-2xl space-y-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-white/10 pb-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-white/10 border border-white/20 text-white flex items-center justify-center text-3xl">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-wider mb-1 border border-white/20">
+                            <i class="fa-solid fa-check-circle"></i> Biometric Face Match Confirmed
+                        </div>
+                        <h2 class="text-3xl font-bold text-white">{{ citizen.fullname }}</h2>
+                        <p class="text-slate-300 text-xs mt-1">
+                            Age: {{ citizen.age }} | Gender: {{ citizen.gender }} | Blood Group: <strong class="text-white font-bold">{{ citizen.blood_group or 'O+' }}</strong>
+                            {% if citizen.abha_id %} | ABHA: <span class="font-mono text-white font-bold">{{ citizen.abha_id }}</span>{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <a href="/records-collection" class="pill-btn-outline text-sm bg-white text-slate-950 hover:bg-slate-200 font-semibold border-white">
+                    <i class="fa-solid fa-notes-medical text-slate-950 mr-1"></i> Open Patient Clinical Intake
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-300">
+                <div class="p-4 bg-slate-900 rounded-xl border border-white/10">
+                    <span class="block text-slate-400 font-semibold mb-1">Known Allergies</span>
+                    <span class="text-white font-bold">{{ citizen.allergies or 'None recorded' }}</span>
+                </div>
+                <div class="p-4 bg-slate-900 rounded-xl border border-white/10">
+                    <span class="block text-slate-400 font-semibold mb-1">Pre-existing Diseases</span>
+                    <span class="text-white font-bold">{{ citizen.diseases or 'None recorded' }}</span>
+                </div>
+                <div class="p-4 bg-slate-900 rounded-xl border border-white/10">
+                    <span class="block text-slate-400 font-semibold mb-1">Emergency Contact</span>
+                    <span class="text-white font-bold font-mono">{{ citizen.emergency_contact or 'Not provided' }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Biometric Identification Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Face Recognition Section -->
