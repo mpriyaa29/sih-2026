@@ -244,20 +244,43 @@
 
                 <!-- SECTION 4: AYUSH / AYURVEDIC TREATMENT HISTORY -->
                 <div class="bg-slate-950/80 p-6 rounded-2xl border border-white/10 space-y-4">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-                        <i class="fa-solid fa-seedling"></i> 4. AYUSH / Herbal Treatment History
-                    </h3>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                            <i class="fa-solid fa-seedling text-emerald-400"></i> 4. AYUSH / Herbal Treatment History & Pariksha Assessment
+                        </h3>
+                        <span class="text-xs text-slate-400 font-mono">Mode: <strong class="text-emerald-400">{{ session.get('clinical_mode', 'ayush') | upper }}</strong></span>
+                    </div>
                     
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center">
-                            <label class="text-xs font-semibold text-slate-300">Previous AYUSH Therapies & Formulations</label>
-                            <button type="button" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs font-semibold transition-all flex items-center gap-1" id="mic-ayush" onclick="toggleVoiceInput('ayush_history', this)">
-                                <i class="fa-solid fa-microphone"></i> <span>Voice</span>
-                                <div class="sound-wave hidden" id="wave-ayush_history"><span></span><span></span><span></span><span></span></div>
-                            </button>
+                    <div class="space-y-3">
+                        <!-- Specific Ayurvedic Pariksha Framework Dropdown -->
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-slate-300">
+                                Specific Ayurvedic Pariksha & Clinical Framework
+                            </label>
+                            <select name="ayurvedic_submode" id="records_ayurvedic_submode" onchange="updateAyushGuidance(this.value)"
+                                class="w-full p-3 bg-slate-900 border border-emerald-500/30 rounded-xl text-white font-medium text-xs focus:outline-none focus:border-emerald-400">
+                                <option value="dashavidha" {% if session.get('ayurvedic_submode') == 'dashavidha' or not session.get('ayurvedic_submode') %}selected{% endif %}>Dashavidha Pariksha (Prakriti, Vikriti, Agni, Koshtha, Ahara-Vihara, etc.)</option>
+                                <option value="trividha" {% if session.get('ayurvedic_submode') == 'trividha' %}selected{% endif %}>Trividha Pariksha (Darshana, Sparshana, Prashna - 3-Fold Assessment)</option>
+                                <option value="ashtavidha" {% if session.get('ayurvedic_submode') == 'ashtavidha' %}selected{% endif %}>Ashtavidha Pariksha (Nadi, Mutra, Mala, Jihva, Shabda, Sparsha, Drik, Akriti)</option>
+                                <option value="prakriti" {% if session.get('ayurvedic_submode') == 'prakriti' %}selected{% endif %}>Prakriti Assessment (Body Constitution: Vata, Pitta, Kapha)</option>
+                                <option value="vikriti" {% if session.get('ayurvedic_submode') == 'vikriti' %}selected{% endif %}>Vikriti Assessment (Current Dosha Imbalance Analysis)</option>
+                                <option value="agni_koshtha" {% if session.get('ayurvedic_submode') == 'agni_koshtha' %}selected{% endif %}>Agni & Koshtha Pariksha (Digestive Capacity & Bowel Nature)</option>
+                                <option value="ahara_vihara" {% if session.get('ayurvedic_submode') == 'ahara_vihara' %}selected{% endif %}>Ahara-Vihara Assessment (Dietary Habits & Daily Routine)</option>
+                                <option value="nidana_samprapti" {% if session.get('ayurvedic_submode') == 'nidana_samprapti' %}selected{% endif %}>Nidana & Samprapti (Causative Factors & Pathogenesis)</option>
+                            </select>
                         </div>
-                        <textarea id="ayush_history" name="ayush_history" rows="2" placeholder="Detail any prior Ayurveda, Yoga, Unani, Siddha, or Homeopathy treatments..."
-                            class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white"></textarea>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="text-xs font-semibold text-slate-300">Previous AYUSH Therapies & Clinical Observation Details</label>
+                                <button type="button" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs font-semibold transition-all flex items-center gap-1" id="mic-ayush" onclick="toggleVoiceInput('ayush_history', this)">
+                                    <i class="fa-solid fa-microphone"></i> <span>Voice</span>
+                                    <div class="sound-wave hidden" id="wave-ayush_history"><span></span><span></span><span></span><span></span></div>
+                                </button>
+                            </div>
+                            <textarea id="ayush_history" name="ayush_history" rows="3" placeholder="Detail any prior Ayurveda, Yoga, Unani, Siddha, or Homeopathy treatments, Prakriti notes, or Pariksha observations..."
+                                class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white"></textarea>
+                        </div>
                     </div>
                 </div>
 
@@ -376,6 +399,24 @@
             }
             activeRecognition = null;
             activeBtn = null;
+        }
+
+        function updateAyushGuidance(submode) {
+            const area = document.getElementById('ayush_history');
+            if (!area) return;
+            const prompts = {
+                'dashavidha': '[Dashavidha Pariksha]: Note Prakriti (constitution), Vikriti (imbalance), Agni (digestion), Koshtha (bowels), Ahara-Vihara (lifestyle)...',
+                'trividha': '[Trividha Pariksha]: Note Darshana (inspection), Sparshana (palpation), Prashna (interrogation)...',
+                'ashtavidha': '[Ashtavidha Pariksha]: Note Nadi (pulse), Mutra (urine), Mala (stool), Jihva (tongue), Shabda (voice), Sparsha (touch), Drik (eyes), Akriti...',
+                'prakriti': '[Prakriti Assessment]: Note Vata/Pitta/Kapha constitution, body build, skin texture, thermal sensitivity...',
+                'vikriti': '[Vikriti Imbalance]: Note current Dosha imbalance, Dhatu involvement, disease symptoms...',
+                'agni_koshtha': '[Agni & Koshtha]: Note Agni type (Mandagni/Vishamagni/Tikshnagni/Samagni) & Koshtha (Kruga/Mrudu/Madhyama)...',
+                'ahara_vihara': '[Ahara-Vihara]: Note dietary Rasa/Virya preferences, meal schedule, sleep, physical exercise, routine...',
+                'nidana_samprapti': '[Nidana & Samprapti]: Note causative triggers, disease onset, pathogenesis progression stages...'
+            };
+            if (prompts[submode] && !area.value) {
+                area.placeholder = prompts[submode];
+            }
         }
     </script>
 </body>

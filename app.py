@@ -104,29 +104,42 @@ LANG_MAP = {
 
 def generate_adaptive_questions(intake_data, citizen_name):
     """
-    Generates 4 adaptive questions taking patient symptoms, scanned document OCR data, AND preferred language into consideration.
+    Generates 4 adaptive questions taking patient symptoms, scanned document OCR data, preferred language, AND specific Ayurvedic Pariksha mode into consideration.
     """
     ocr_info = intake_data.get('ocr_text', 'No document uploaded.')
     lang_code = intake_data.get('preferred_language', 'en-IN')
     lang_name = LANG_MAP.get(lang_code, "English")
+    ayush_mode = intake_data.get('clinicalMode', 'modern_medicine')
+    ayurvedic_submode = intake_data.get('ayurvedic_submode', 'dashavidha')
+
+    ayush_prompt_note = ""
+    if ayush_mode == "ayush" or ayurvedic_submode:
+        ayush_prompt_note = f"""
+    SPECIAL AYURVEDIC PARIKSHA ASSESSMENT INSTRUCTION:
+    The user has selected the AYUSH / Ayurvedic Clinical Framework focused on: {ayurvedic_submode.upper()}.
+    Include clinical assessment questions evaluating Ayurvedic parameters such as Prakriti (constitution), Vikriti (current imbalance), Agni (digestive power), Koshtha (bowels), Ahara-Vihara (diet/lifestyle), Nidana (causative factors), or Samprapti (pathogenesis).
+        """
 
     prompt = f"""
     You are an expert AYUSH & Clinical Triage AI assistant.
     Patient Profile:
     - Name: {citizen_name}
+    - Clinical Mode: {ayush_mode.upper()} (Framework: {ayurvedic_submode})
     - Preferred Language: {lang_name} ({lang_code})
     - Illness / Primary Complaint: {intake_data.get('illness', 'Unspecified')}
     - Symptoms: {intake_data.get('symptoms', 'Unspecified')}
     - Reported Severity: {intake_data.get('severity', 'Moderate')}
     - Medical History: {intake_data.get('history', 'None')}
-    - AYUSH History: {intake_data.get('ayush_history', 'None')}
+    - AYUSH History & Pariksha Notes: {intake_data.get('ayush_history', 'None')}
 
     SCANNED MEDICAL DOCUMENTS & LAB / PRESCRIPTION OCR FINDINGS:
     {ocr_info}
 
+    {ayush_prompt_note}
+
     CRITICAL INSTRUCTION:
-    Analyze the patient's reported symptoms AND the scanned prescription / lab test documents above (such as prescribed antibiotics, lipid profile, cholesterol levels, lab test numbers, or medical history notes).
-    Generate exactly 4 adaptive, highly relevant clinical assessment questions that take the scanned medical document findings AND patient symptoms into account to determine disease severity, medication response, and clinical risk.
+    Analyze the patient's reported symptoms AND the scanned prescription / lab test documents above.
+    Generate exactly 4 adaptive, highly relevant clinical assessment questions that take the scanned medical document findings, patient symptoms, and Ayurvedic assessment framework into account to determine disease severity, medication response, and clinical risk.
     IMPORTANT: Write the questions in the patient's preferred language ({lang_name}). If the language is not English, provide the question in {lang_name} followed by the English translation in parentheses.
 
     Return JSON only strictly formatted as:
@@ -141,7 +154,7 @@ def generate_adaptive_questions(intake_data, citizen_name):
     return [
         f"How long have you experienced these specific {illness} symptoms, and have they worsened rapidly over the past 48 hours?",
         f"On a scale of 1 to 10, how severe is your discomfort right now, and does it interfere with your sleep or daily tasks?",
-        f"Are you experiencing any accompanying symptoms such as high fever, shortness of breath, sudden dizziness, or chest tightness?",
+        f"Are you experiencing any accompanying symptoms such as high fever, shortness of breath, sudden dizziness, or digestive imbalance (Agni/Koshtha)?",
         f"Have you tried any prior herbal/AYUSH therapies or prescribed medications (such as antibiotics/statins), and did they provide any relief?"
     ]
 
@@ -776,9 +789,13 @@ def records_collection():
 
             combined_ocr_text = "\n\n".join(ocr_texts) if ocr_texts else "No document attached during intake."
 
+            ayurvedic_submode = request.form.get("ayurvedic_submode") or session.get("ayurvedic_submode", "dashavidha")
+            session["ayurvedic_submode"] = ayurvedic_submode
+
             # Save into session for AI diagnosis screen
             session["temp_patient_intake"] = {
                 "clinicalMode": session.get("clinical_mode", "modern_medicine"),
+                "ayurvedic_submode": ayurvedic_submode,
                 "preferred_language": preferred_language,
                 "illness": illness,
                 "symptoms": symptoms,
