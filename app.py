@@ -778,6 +778,7 @@ def records_collection():
 
             # Save into session for AI diagnosis screen
             session["temp_patient_intake"] = {
+                "clinicalMode": session.get("clinical_mode", "modern_medicine"),
                 "preferred_language": preferred_language,
                 "illness": illness,
                 "symptoms": symptoms,
@@ -2474,11 +2475,18 @@ def kiosk_landing():
 @app.route("/kiosk/self-auth", methods=["GET", "POST"])
 def kiosk_self_auth():
     if request.method == "POST":
+        pref_lang = request.form.get("language", "en-IN")
         session["intake_mode"] = "self"
         session["source"] = "patient"
         session["is_attendant_consent"] = False
         session["consent_type"] = "standard"
-        return redirect(url_for("records_collection"))
+        session["preferred_language"] = pref_lang
+        session["patient_session"] = {
+            "language": pref_lang,
+            "consent": True,
+            "clinicalMode": session.get("clinical_mode", "modern_medicine")
+        }
+        return redirect(url_for("kiosk_clinical_mode"))
     return render_template("kiosk_self_auth.html")
 
 @app.route("/kiosk/attended-preform", methods=["GET", "POST"])
@@ -2502,10 +2510,12 @@ def kiosk_attended_preform():
             error = "Attendant-only consent is ONLY permitted for minor patients (<18 yrs) or incapacitated patients. For adult capacitated patients, please select Patient Self Intake or obtain direct patient consent."
             return render_template("attended_preform.html", citizens=citizens, error=error)
 
+        pref_lang = request.form.get("language", "en-IN")
         session["intake_mode"] = "attended"
         session["source"] = "attendant"
         session["is_attendant_consent"] = True
         session["consent_type"] = "attendant"
+        session["preferred_language"] = pref_lang
         session["attendant_info"] = {
             "name": attendant_name,
             "age": attendant_age,
@@ -2513,9 +2523,30 @@ def kiosk_attended_preform():
             "is_minor": is_minor,
             "is_incapacitated": is_incapacitated
         }
-        return redirect(url_for("records_collection"))
+        session["patient_session"] = {
+            "language": pref_lang,
+            "consent": True,
+            "clinicalMode": session.get("clinical_mode", "modern_medicine")
+        }
+        return redirect(url_for("kiosk_clinical_mode"))
 
     return render_template("attended_preform.html", citizens=citizens, error=error)
+
+@app.route("/kiosk/clinical-mode", methods=["GET", "POST"])
+def kiosk_clinical_mode():
+    if request.method == "POST":
+        clinical_mode = request.form.get("clinical_mode", "modern_medicine")
+        session["clinical_mode"] = clinical_mode
+        
+        if "patient_session" not in session or not isinstance(session["patient_session"], dict):
+            session["patient_session"] = {}
+            
+        session["patient_session"]["clinicalMode"] = clinical_mode
+        session["patient_session"]["language"] = session.get("preferred_language", "en-IN")
+        session["patient_session"]["consent"] = True
+        return redirect(url_for("records_collection"))
+
+    return render_template("kiosk_clinical_mode.html")
 
 @app.route("/hpr-login", methods=["GET", "POST"])
 def hpr_login():
