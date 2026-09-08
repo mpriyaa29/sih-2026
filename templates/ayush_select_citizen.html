@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Citizen for AYUSH Intake</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/doctor.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        .form-card {
+            width: 650px;
+            max-width: 90%;
+            background: rgba(15,30,70,0.95);
+            border: 1px solid rgba(59,130,246,0.25);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.4);
+            color: #ffffff;
+            margin: 40px auto;
+        }
+        .form-card h2 {
+            color: #3b82f6;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 26px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #1e3a8a;
+            border-radius: 10px;
+            background: #0b1f4d;
+            color: #ffffff;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #059669;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-submit:hover {
+            background: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="margin:0;"><i class="fa-solid fa-user-plus"></i> Select Patient for AYUSH Digital Case-Taking</h2>
+            <a href="javascript:history.back()" style="padding: 6px 14px; background:#475569; color:#fff; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        </div>
+        <form method="GET" action="" id="selectForm">
+            <div class="form-group">
+                <label><i class="fa-solid fa-user" style="color:#3b82f6;"></i> Select Patient:</label>
+                <select name="citizen_id" id="citizen_id" required>
+                    <option value="">-- Choose Citizen --</option>
+                    {% for c in citizens %}
+                        <option value="{{ c.id }}">{{ c.fullname }} (ID: {{ c.id }}, Age: {{ c.age }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label><i class="fa-solid fa-seedling" style="color:#10b981;"></i> Select AYUSH System:</label>
+                <select name="system" id="system" required>
+                    <option value="ayurveda">Ayurveda</option>
+                    <option value="homeopathy">Homeopathy</option>
+                    <option value="siddha">Siddha</option>
+                    <option value="unani">Unani</option>
+                    <option value="yoga_naturopathy">Yoga & Naturopathy</option>
+                </select>
+            </div>
+            <button type="button" onclick="startIntake()" class="btn-submit"><i class="fa-solid fa-play"></i> Start Clinical Intake</button>
+        </form>
+    </div>
+    <script>
+        function startIntake() {
+            var citizenId = document.getElementById('citizen_id').value;
+            var system = document.getElementById('system').value;
+            if (citizenId && system) {
+                window.location.href = '/ayush/case-form/' + citizenId + '/' + system;
+            } else {
+                alert('Please select both a citizen and an Ayush system.');
+            }
+        }
+    </script>
+</body>
+</html>

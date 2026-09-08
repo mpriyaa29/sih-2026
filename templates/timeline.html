@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Timeline - {{ citizen.fullname }} - LifeLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        body { background: #060913; color: #f8fafc; font-family: 'Inter', system-ui, sans-serif; }
+        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.2); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+        .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(59, 130, 246, 0.15); }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4 sm:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent flex items-center gap-3">
+                    <i class="fa-solid fa-timeline text-blue-500"></i> Patient Medical Timeline
+                </h1>
+                <p class="text-slate-400 text-sm mt-2">
+                    <strong class="text-slate-200">{{ citizen.fullname }}</strong> 
+                    <span class="text-slate-500">| Age: {{ citizen.age }} | Gender: {{ citizen.gender if citizen.gender else 'N/A' }} | Blood Group: <span class="text-red-400 font-bold">{{ citizen.blood_group }}</span></span>
+                </p>
+            </div>
+            <a href="javascript:history.back()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition text-sm flex items-center gap-2 border border-slate-700">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <!-- Timeline Items -->
+        <div class="glass-panel rounded-2xl p-6 sm:p-8">
+            {% if events %}
+                <div class="relative border-l-2 border-blue-500/30 pl-6 sm:pl-8 space-y-8 ml-2 sm:ml-4">
+                    {% for event in events %}
+                        <div class="relative group">
+                            <!-- Bullet indicator -->
+                            <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4 h-4 rounded-full border-2 border-slate-900 
+                                {% if event.type == 'case' %}bg-emerald-500 ring-4 ring-emerald-500/20{% elif event.type == 'prescription' %}bg-cyan-500 ring-4 ring-cyan-500/20{% else %}bg-purple-500 ring-4 ring-purple-500/20{% endif %}">
+                            </div>
+
+                            <div class="flex items-center gap-2 text-xs font-mono text-slate-400 mb-1">
+                                <i class="fa-regular fa-clock"></i> {{ event.date }}
+                            </div>
+
+                            <div class="glass-card rounded-xl p-5 border border-slate-800 hover:border-blue-500/30 transition">
+                                <div class="flex items-center justify-between gap-4 mb-3">
+                                    <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                                        {% if event.type == 'case' %}
+                                            <i class="fa-solid fa-file-medical text-emerald-400"></i> AYUSH Case: {{ event.title }}
+                                        {% elif event.type == 'prescription' %}
+                                            <i class="fa-solid fa-pills text-cyan-400"></i> Prescription Record
+                                        {% else %}
+                                            <i class="fa-solid fa-notes-medical text-purple-400"></i> Baseline Medical Record
+                                        {% endif %}
+                                    </h3>
+
+                                    {% if event.type == 'case' %}
+                                        {% if event.priority == 'URGENT' %}
+                                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-950 text-red-400 border border-red-800">URGENT</span>
+                                        {% elif event.priority == 'REVIEW_REQUIRED' %}
+                                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-950 text-amber-400 border border-amber-800">REVIEW REQUIRED</span>
+                                        {% else %}
+                                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">ROUTINE</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+
+                                <div class="text-sm text-slate-300 leading-relaxed bg-slate-950/50 p-4 rounded-lg border border-slate-800/80">
+                                    {{ event.content | safe }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12 border border-dashed border-slate-800 rounded-xl bg-slate-950/30">
+                    <i class="fa-solid fa-clock-rotate-left text-4xl text-slate-600 mb-3"></i>
+                    <p class="text-slate-400 font-medium">No medical history recorded yet.</p>
+                    <p class="text-xs text-slate-500 mt-1">Medical case notes, prescriptions, and baseline details will appear here chronologically.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

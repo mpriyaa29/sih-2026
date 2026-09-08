@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self Intake ABHA Auth - BioLink AYUSH Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            background-color: #050811;
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .pill-btn-outline {
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 0.5rem;
+            padding: 0.6rem 1.4rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .pill-btn-outline:hover {
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- TOP NAVIGATION -->
+    <header class="glass-header sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 text-2xl font-extrabold text-white tracking-tighter">
+                <span class="w-8 h-8 rounded-lg bg-black/40 border border-white/20 flex items-center justify-center text-xs text-white">
+                    <i class="fa-solid fa-dna text-slate-200"></i>
+                </span>
+                <span>BioLink<span class="font-normal text-slate-300 ml-1">AYUSH</span></span>
+            </a>
+            <a href="/" class="pill-btn-outline text-xs">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Return Home
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-xl mx-auto px-6 py-12 w-full my-auto">
+        <div class="glass-card rounded-3xl p-8 sm:p-10 space-y-6 w-full">
+            
+            <!-- Header -->
+            <div class="space-y-2 border-b border-white/10 pb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-slate-200 text-xs font-semibold">
+                    <i class="fa-solid fa-user-check"></i> Mode 01: Self Intake Kiosk
+                </div>
+                <h2 class="text-3xl font-normal tracking-tight text-white">ABHA Digital Authentication</h2>
+                <p class="text-slate-300 text-xs leading-relaxed font-light">Verify patient identity and record consent prior to Gemini AI adaptive intake</p>
+            </div>
+
+            <form method="POST" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                        ABHA ID / Aadhaar Number
+                    </label>
+                    <input type="text" name="abha_id" value="91-8472-1092-3849" placeholder="Enter ABHA ID (e.g. 91-8472-1092-3849)" required
+                        class="w-full p-4 bg-slate-950/80 border border-white/20 rounded-xl text-white font-mono text-base focus:outline-none focus:border-white transition">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+                        Preferred Language for Clinical Interview
+                    </label>
+                    <select name="language" class="w-full p-4 bg-slate-950/80 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white transition">
+                        <option value="en-IN" selected>English (India)</option>
+                        <option value="hi-IN">Hindi (हिंदी)</option>
+                        <option value="ta-IN">Tamil (தமிழ்)</option>
+                        <option value="te-IN">Telugu (తెలుగు)</option>
+                        <option value="kn-IN">Kannada (கன்னட)</option>
+                        <option value="ml-IN">Malayalam (മലയാളം)</option>
+                        <option value="mr-IN">Marathi (मराठी)</option>
+                        <option value="bn-IN">Bengali (বাংলা)</option>
+                    </select>
+                </div>
+
+                <!-- Audio Consent Checkbox -->
+                <div class="p-4 bg-slate-950/80 rounded-2xl border border-white/10 space-y-2">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" required checked class="mt-1 w-4 h-4 text-slate-900 rounded border-slate-700 focus:ring-white">
+                        <span class="text-xs text-slate-300 leading-relaxed font-light">
+                            <strong class="text-white font-semibold">Patient Digital & Audio Consent:</strong> I hereby grant consent to record clinical complaints, perform AI diagnostic synthesis, and push medical record artefacts to HIS and ABDM.
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-white hover:bg-slate-200 text-slate-950 font-semibold rounded-xl transition-all flex items-center justify-center gap-2 text-sm shadow-xl">
+                    <span>Verify ABHA & Begin Case Intake</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </form>
+
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-xs text-slate-500 border-t border-white/10">
+        © BioLink AYUSH Digital Kiosk Infrastructure
+    </footer>
+</body>
+</html>

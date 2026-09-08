@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYUSH Case Taking - {{ system | upper }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/doctor.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        .form-card {
+            width: 750px;
+            max-width: 90%;
+            background: rgba(15,30,70,0.95);
+            border: 1px solid rgba(59,130,246,0.25);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.4);
+            color: #ffffff;
+            margin: 40px auto;
+        }
+        .form-card h2 {
+            color: #3b82f6;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .form-card p {
+            color: #94a3b8;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 22px;
+        }
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .form-group label {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0;
+        }
+        .mic-btn {
+            background: #1e3a8a;
+            color: #ffffff;
+            border: 1px solid #3b82f6;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+        }
+        .mic-btn:hover {
+            background: #2563eb;
+        }
+        .mic-btn.listening {
+            background: #dc2626;
+            border-color: #ef4444;
+            animation: pulse 1.2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #1e3a8a;
+            border-radius: 10px;
+            background: #0b1f4d;
+            color: #ffffff;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-submit:hover {
+            background: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="margin:0;"><i class="fa-solid fa-notes-medical"></i> AYUSH Case Intake: {{ system | upper }}</h2>
+            <a href="javascript:history.back()" style="padding: 6px 14px; background:#475569; color:#fff; text-decoration:none; border-radius:6px; font-size:14px; font-weight:600;"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        </div>
+        <p style="margin-top:10px;"><strong>Patient Name:</strong> {{ citizen.fullname }} &nbsp;|&nbsp; <strong>Age:</strong> {{ citizen.age }} &nbsp;|&nbsp; <strong>Blood Group:</strong> {{ citizen.blood_group }}</p>
+        <hr style="border: 0; height: 1px; background: rgba(59,130,246,0.2); margin-bottom: 25px;">
+
+        <form method="POST">
+            {% for q in questions %}
+                <div class="form-group">
+                    <div class="label-row">
+                        <label><i class="fa-solid fa-angle-right" style="color:#3b82f6;"></i> {{ q.label }}</label>
+                        {% if q.type in ['textarea', 'text'] %}
+                            <button type="button" class="mic-btn" id="mic-btn-{{ q.key }}" onclick="toggleVoiceInput('input-{{ q.key }}', this)" title="Click to Speak / Dictate">
+                                <i class="fa-solid fa-microphone"></i> <span>Voice Input</span>
+                            </button>
+                        {% endif %}
+                    </div>
+
+                    {% if q.type == 'textarea' %}
+                        <textarea id="input-{{ q.key }}" name="{{ q.key }}" placeholder="Enter clinical details or click Voice Input to speak..."></textarea>
+                    {% elif q.type == 'select' %}
+                        <select id="input-{{ q.key }}" name="{{ q.key }}">
+                            {% for opt in q.options %}
+                                <option value="{{ opt }}">{{ opt }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <input type="text" id="input-{{ q.key }}" name="{{ q.key }}" placeholder="Enter details or click Voice Input to speak...">
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-submit"><i class="fa-solid fa-check"></i> Submit Case History</button>
+        </form>
+    </div>
+
+    <script>
+        var activeRecognition = null;
+        var activeBtn = null;
+
+        function toggleVoiceInput(inputId, btn) {
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Voice recognition is not supported in your browser. Please use Google Chrome, MS Edge, or Brave.");
+                return;
+            }
+
+            var inputElem = document.getElementById(inputId);
+
+            if (activeRecognition && activeBtn === btn) {
+                activeRecognition.stop();
+                return;
+            }
+
+            if (activeRecognition) {
+                activeRecognition.stop();
+            }
+
+            var recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-IN'; // Indian English / English dictation
+
+            activeRecognition = recognition;
+            activeBtn = btn;
+
+            btn.classList.add("listening");
+            btn.querySelector("span").textContent = "Listening...";
+
+            recognition.onresult = function(event) {
+                var transcript = "";
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                inputElem.value = transcript;
+            };
+
+            recognition.onerror = function(event) {
+                console.log("Voice recognition error:", event.error);
+                stopListening(btn);
+            };
+
+            recognition.onend = function() {
+                stopListening(btn);
+            };
+
+            recognition.start();
+        }
+
+        function stopListening(btn) {
+            if (btn) {
+                btn.classList.remove("listening");
+                btn.querySelector("span").textContent = "Voice Input";
+            }
+            activeRecognition = null;
+            activeBtn = null;
+        }
+    </script>
+</body>
+</html>

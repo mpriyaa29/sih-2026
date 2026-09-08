@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Treatment Screen - Doctor HPR Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        body { background-color: #060913; }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(225, 29, 72, 0.25);
+            box-shadow: 0 0 35px rgba(0, 0, 0, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans text-slate-100 p-6">
+    <div class="glass-card max-w-4xl mx-auto rounded-3xl p-8 my-6 space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold mb-2">
+                    <i class="fa-solid fa-heart-pulse"></i> DEEMED EMERGENCY TREATMENT SCREEN
+                </div>
+                <h2 class="text-3xl font-extrabold text-white flex items-center gap-3">
+                    <i class="fa-solid fa-user-doctor text-rose-500"></i> Doctor Emergency Care Portal
+                </h2>
+                <p class="text-slate-400 text-xs mt-1">
+                    Attending Physician: <strong class="text-white">{{ doctor.name if doctor else 'HPR Specialist' }}</strong> 
+                    | HPR ID: <span class="text-blue-400 font-mono font-bold">{{ doctor.hpr_id if doctor else 'HPR-DOC001' }}</span>
+                </p>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="/doctor/reconcile" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-xs transition flex items-center gap-1.5 shadow-lg shadow-amber-900/30">
+                    <i class="fa-solid fa-link"></i> Reconcile Identity
+                </a>
+                <a href="/doctor-dashboard" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs transition border border-slate-700">
+                    <i class="fa-solid fa-house-medical"></i> Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Deemed Emergency Audit Alert Badge -->
+        <div class="p-4 rounded-2xl bg-rose-950/80 border border-rose-600 text-rose-200 text-xs font-semibold flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-shield-cat text-rose-400 text-2xl"></i>
+                <div>
+                    <span class="block text-white font-bold text-sm">Deemed Emergency Legal Consent Logging Active</span>
+                    <span class="text-slate-300">Action logged in AuditLog with <code class="text-rose-300">consent_type='deemed_emergency'</code> for clinical compliance.</span>
+                </div>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-rose-600 text-white font-bold text-[10px] uppercase">Logged</span>
+        </div>
+
+        <!-- Patient Emergency Summary -->
+        <div class="p-6 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-hospital-user text-blue-400"></i> Patient File: {{ citizen.fullname }}
+                </h3>
+                <span class="px-3 py-1 rounded-full text-xs font-bold {% if citizen.status == 'unidentified' %}bg-rose-950 text-rose-300 border border-rose-800{% else %}bg-emerald-950 text-emerald-300 border border-emerald-800{% endif %}">
+                    STATUS: {{ citizen.status | upper }}
+                </span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="text-slate-500 block mb-0.5">Citizen ID</span>
+                    <strong class="text-white">#{{ citizen.id }}</strong>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="text-slate-500 block mb-0.5">Age / Gender</span>
+                    <strong class="text-white">{{ citizen.age }} / {{ citizen.gender }}</strong>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="text-slate-500 block mb-0.5">Blood Group</span>
+                    <strong class="text-red-400 font-bold">{{ citizen.blood_group }}</strong>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="text-slate-500 block mb-0.5">ABHA ID</span>
+                    <strong class="text-blue-400 font-mono">{{ citizen.abha_id if citizen.abha_id else 'NOT LINKED' }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Case / Triage Notes -->
+        {% if case %}
+        <div class="p-6 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-3">
+            <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-file-wave"></i> Triage Case Summary
+            </h3>
+            <pre class="bg-slate-950 p-4 rounded-xl text-slate-300 text-xs font-mono whitespace-pre-wrap border border-slate-800 leading-relaxed">{{ case.ai_summary }}</pre>
+        </div>
+        {% endif %}
+
+        <!-- Emergency Prescription & Treatment Action -->
+        <form method="POST" action="/upload-prescription" class="p-6 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-4">
+            <input type="hidden" name="citizen_id" value="{{ citizen.id }}">
+            <h3 class="text-base font-bold text-emerald-400 flex items-center gap-2">
+                <i class="fa-solid fa-prescription text-emerald-400"></i> Prescribe Emergency Medication & Treatment Plan
+            </h3>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-300">Medication Prescription</label>
+                <input type="text" name="prescription" placeholder="e.g. Paracetamol 500mg, IV Normal Saline 500ml" required
+                    class="w-full p-3 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-emerald-500">
+            </div>
+
+            <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl shadow-xl shadow-emerald-900/40 transition-all flex items-center justify-center gap-2 text-base">
+                <i class="fa-solid fa-pills"></i> Record Emergency Prescription & Safety Check
+            </button>
+        </form>
+
+    </div>
+</body>
+</html>

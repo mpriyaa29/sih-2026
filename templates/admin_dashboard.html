@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - LifeLink</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        body { background-color: #060913; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans text-slate-100 p-6">
+    <div class="max-w-7xl mx-auto space-y-8">
+        
+        <!-- Top Navbar Header -->
+        <div class="glass-panel rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-500 text-2xl">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-white tracking-tight">System Admin Workspace</h1>
+                    <p class="text-slate-400 text-sm">Hospital overview, real-time analytics & security audit logs</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="/hospital-workspace" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg shadow-emerald-600/20">
+                    <i class="fa-solid fa-hospital"></i> Hospital Hub
+                </a>
+                <a href="/role-login" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg shadow-rose-600/20">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="flex items-center justify-between text-slate-400 mb-2 text-sm font-semibold">
+                    <span>REGISTERED CITIZENS</span>
+                    <i class="fa-solid fa-users text-blue-500"></i>
+                </div>
+                <div class="text-4xl font-extrabold text-white">{{ total_citizens }}</div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="flex items-center justify-between text-slate-400 mb-2 text-sm font-semibold">
+                    <span>MEDICAL DOCTORS</span>
+                    <i class="fa-solid fa-user-doctor text-emerald-500"></i>
+                </div>
+                <div class="text-4xl font-extrabold text-white">{{ total_doctors }}</div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="flex items-center justify-between text-slate-400 mb-2 text-sm font-semibold">
+                    <span>AYUSH CASES RECORDED</span>
+                    <i class="fa-solid fa-notes-medical text-purple-500"></i>
+                </div>
+                <div class="text-4xl font-extrabold text-white">{{ total_cases }}</div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="flex items-center justify-between text-slate-400 mb-2 text-sm font-semibold">
+                    <span>APPOINTMENTS SCHEDULED</span>
+                    <i class="fa-solid fa-calendar-check text-amber-500"></i>
+                </div>
+                <div class="text-4xl font-extrabold text-white">{{ total_appointments }}</div>
+            </div>
+        </div>
+
+        <!-- Chart.js Analytics Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="glass-panel lg:col-span-2 p-6 rounded-2xl space-y-4">
+                <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line"></i> Case Intake Trends & Activity Volume
+                </h3>
+                <div class="h-64">
+                    <canvas id="casesChart"></canvas>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl space-y-4">
+                <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie"></i> Triage Priority Breakdown
+                </h3>
+                <div class="h-64 flex justify-center">
+                    <canvas id="triageChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Doctor Roster -->
+        <div class="glass-panel rounded-2xl p-6 space-y-4">
+            <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+                <i class="fa-solid fa-user-doctor"></i> Active Medical Roster
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-900/80 text-slate-400 uppercase text-xs">
+                        <tr>
+                            <th class="p-3.5">Doctor ID</th>
+                            <th class="p-3.5">Full Name</th>
+                            <th class="p-3.5">Designation</th>
+                            <th class="p-3.5">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        {% for d in doctors %}
+                        <tr class="hover:bg-slate-900/50 transition-all">
+                            <td class="p-3.5 font-bold text-blue-400">{{ d.doctor_id }}</td>
+                            <td class="p-3.5 font-semibold text-white">{{ d.name }}</td>
+                            <td class="p-3.5 text-slate-400">{{ d.designation }}</td>
+                            <td class="p-3.5">
+                                {% if d.blocked_until %}
+                                    <span class="px-2.5 py-1 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full font-bold text-xs">Blocked</span>
+                                {% else %}
+                                    <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full font-bold text-xs">Active</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Security & Access Audit Logs -->
+        <div class="glass-panel rounded-2xl p-6 space-y-4">
+            <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left"></i> Security & Patient Access Audit Logs
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-900/80 text-slate-400 uppercase text-xs">
+                        <tr>
+                            <th class="p-3.5">Log ID</th>
+                            <th class="p-3.5">Practitioner</th>
+                            <th class="p-3.5">Designation</th>
+                            <th class="p-3.5">Patient</th>
+                            <th class="p-3.5">Access Mode</th>
+                            <th class="p-3.5">Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        {% for log in logs %}
+                        <tr class="hover:bg-slate-900/50 transition-all">
+                            <td class="p-3.5 text-slate-500 font-mono">#{{ log.id }}</td>
+                            <td class="p-3.5 text-white font-semibold">{{ log.doctor_name }}</td>
+                            <td class="p-3.5 text-slate-400">{{ log.designation }}</td>
+                            <td class="p-3.5 text-slate-200">{{ log.patient_name }}</td>
+                            <td class="p-3.5 text-blue-400 font-medium">{{ log.access_mode }}</td>
+                            <td class="p-3.5 text-slate-400 text-xs font-mono">{{ log.access_time }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Scripts -->
+    <script>
+        // Line Chart for Case Trends
+        const ctxCases = document.getElementById('casesChart').getContext('2d');
+        new Chart(ctxCases, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                datasets: [{
+                    label: 'Cases Intake',
+                    data: [12, 19, 15, 25, 22, 30, 28, 35, {{ total_cases }}],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } }
+                }
+            }
+        });
+
+        // Doughnut Chart for Triage Priority
+        const ctxTriage = document.getElementById('triageChart').getContext('2d');
+        new Chart(ctxTriage, {
+            type: 'doughnut',
+            data: {
+                labels: ['Urgent', 'Review Required', 'Routine'],
+                datasets: [{
+                    data: [4, 8, 15],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#94a3b8' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

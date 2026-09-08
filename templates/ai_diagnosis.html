@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini AI Clinical Assessment - BioLink AYUSH</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <!-- HTML2PDF Library for Instant PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            background-color: #050811;
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .pill-btn-outline {
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .pill-btn-outline:hover {
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; }
+            .glass-card { background: #ffffff !important; color: #000000 !important; border: none !important; box-shadow: none !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- TOP NAVIGATION -->
+    <header class="glass-header sticky top-0 z-50 no-print">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 text-2xl font-extrabold text-white tracking-tighter">
+                <span class="w-8 h-8 rounded-lg bg-black/40 border border-white/20 flex items-center justify-center text-xs text-white">
+                    <i class="fa-solid fa-dna text-slate-200"></i>
+                </span>
+                <span>BioLink<span class="font-normal text-slate-300 ml-1">AYUSH</span></span>
+            </a>
+            <div class="flex items-center gap-3">
+                {% if report_generated %}
+                <button type="button" onclick="downloadReportPDF()" class="pill-btn-outline text-xs bg-white/10 hover:bg-white/20">
+                    <i class="fa-solid fa-file-pdf mr-1"></i> Download PDF
+                </button>
+                {% endif %}
+                <a href="/records-collection" class="pill-btn-outline text-xs">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Intake Page
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-8 w-full my-auto">
+        <div class="glass-card rounded-3xl p-6 sm:p-10 space-y-8 w-full" id="reportContent">
+            
+            <!-- Header -->
+            <div class="space-y-2 border-b border-white/10 pb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-slate-200 text-xs font-semibold">
+                    <i class="fa-solid fa-brain"></i> Powered by Gemini 3.5 Flash AI Engine
+                </div>
+                <h1 class="text-3xl font-normal tracking-tight text-white">
+                    Adaptive AI Triage & Clinical Assessment
+                </h1>
+                <p class="text-slate-300 text-xs leading-relaxed font-light">
+                    Patient: <strong class="text-white font-medium">{{ citizen.fullname }}</strong> (Age: {{ citizen.age }}, Gender: {{ citizen.gender }})
+                    {% if citizen.abha_id %}
+                        | ABHA: <span class="text-slate-200 font-mono font-bold">{{ citizen.abha_id }}</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if not report_generated %}
+            <!-- STEP 1: INTERACTIVE 4 ADAPTIVE QUESTIONS QUESTIONNAIRE -->
+            <div class="space-y-6">
+                <div class="p-6 rounded-2xl bg-slate-950/80 border border-white/10 space-y-2">
+                    <div class="flex items-center gap-2 text-white font-medium text-base">
+                        <i class="fa-solid fa-sliders text-slate-300"></i>
+                        <span>Gemini AI Symptom-Adaptive Assessment</span>
+                    </div>
+                    <p class="text-slate-300 text-xs leading-relaxed font-light">
+                        Based on your primary complaints (<strong class="text-white">{{ intake_data.get('illness', 'Symptoms') }}</strong>), Gemini AI has generated <strong>4 targeted questions</strong> to evaluate symptom severity and disease progression.
+                    </p>
+                </div>
+
+                <form method="POST" action="/ai-diagnosis/{{ citizen.id }}/submit-answers" class="space-y-6" id="qaForm">
+                    {% for question in questions %}
+                    <div class="glass-panel p-6 rounded-2xl space-y-4 hover:border-white/30 transition">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-xl bg-white/10 border border-white/20 text-white font-bold flex items-center justify-center text-xs shrink-0">
+                                    Q{{ loop.index }}
+                                </span>
+                                <h3 class="text-sm font-semibold text-white leading-snug">
+                                    {{ question }}
+                                </h3>
+                            </div>
+                            <button type="button" onclick="startVoiceDictation('ans_{{ loop.index0 }}')" id="mic_ans_{{ loop.index0 }}" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
+                                <i class="fa-solid fa-microphone"></i> Voice
+                            </button>
+                        </div>
+
+                        <textarea id="ans_{{ loop.index0 }}" name="ans_{{ loop.index0 }}" rows="2" class="w-full bg-slate-950 border border-white/20 rounded-xl p-3.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-white transition" placeholder="Type or use voice dictation to answer this question..."></textarea>
+                    </div>
+                    {% endfor %}
+
+                    <button type="submit" class="w-full py-4 bg-white hover:bg-slate-200 text-slate-950 font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-xl">
+                        <i class="fa-solid fa-microchip"></i>
+                        <span>Generate AI Diagnostic Report & Risk Assessment</span>
+                    </button>
+                </form>
+            </div>
+
+            {% else %}
+
+            <!-- STEP 2: GENERATED AI DIAGNOSTIC REPORT & PROCEED TO APPOINTMENT -->
+            <div class="space-y-6" id="printableReport">
+                
+                <!-- RISK / RED-FLAG ANALYSIS CARD -->
+                <div class="p-6 rounded-2xl bg-slate-950/90 border border-white/15 space-y-4 shadow-xl">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white text-2xl">
+                                <i class="fa-solid fa-shield-heart"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">
+                                    {{ report.get('risk_level', 'MODERATE RISK') }}
+                                </h3>
+                                <span class="text-xs font-medium text-slate-300">Gemini AI Severity Assessment</span>
+                            </div>
+                        </div>
+
+                        <div class="px-5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-sm tracking-wider uppercase flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                            Risk Score: {{ report.get('risk_score', 5) }}/10
+                        </div>
+                    </div>
+
+                    <!-- Red Flags List -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Detected Clinical Indicators</span>
+                        <div class="space-y-2">
+                            {% for flag in report.get('red_flags', []) %}
+                            <div class="p-3.5 bg-slate-900 rounded-xl border border-white/10 text-xs text-slate-200 flex items-center gap-3">
+                                <i class="fa-solid fa-triangle-exclamation text-slate-300 text-sm"></i>
+                                <span>{{ flag }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STANDARDIZED AYUSH CODING -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-5 bg-slate-950/90 rounded-2xl border border-white/10 space-y-1">
+                        <span class="text-slate-400 block text-xs font-semibold uppercase tracking-wider">AYUSH NAMASTE Code</span>
+                        <strong class="text-white text-base font-bold block">{{ report.get('namaste_code', 'AYU-GEN-01') }}</strong>
+                    </div>
+                    <div class="p-5 bg-slate-950/90 rounded-2xl border border-white/10 space-y-1">
+                        <span class="text-slate-400 block text-xs font-semibold uppercase tracking-wider">ICD-11 TM2 Code</span>
+                        <strong class="text-white text-base font-bold block">{{ report.get('icd11_code', 'TM2-GEN-01') }}</strong>
+                    </div>
+                </div>
+
+                <!-- SCANNED MEDICAL DOCUMENTS & LAB / PRESCRIPTION ANALYSIS -->
+                {% if report.get('scanned_document_analysis') or intake_data.get('ocr_text') %}
+                <div class="p-6 bg-slate-950/90 rounded-2xl border border-white/10 space-y-3">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-prescription"></i> Scanned Document & Lab/Prescription Vision Analysis
+                    </h3>
+                    <div class="bg-slate-900 p-4 rounded-xl text-slate-200 text-xs leading-relaxed border border-white/10 whitespace-pre-wrap font-mono">
+                        {{ report.get('scanned_document_analysis') or intake_data.get('ocr_text') }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- CONSOLIDATED AI CLINICAL SUMMARY -->
+                <div class="p-6 bg-slate-950/90 rounded-2xl border border-white/10 space-y-3">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-waveform"></i> Consolidated Open Page Summary
+                    </h3>
+                    <div class="bg-slate-900 p-4 rounded-xl text-slate-200 text-xs leading-relaxed border border-white/10 whitespace-pre-wrap">
+                        {{ report.get('summary', '') }}
+                    </div>
+                </div>
+
+                <!-- RECOMMENDATIONS -->
+                {% if report.get('recommendations') %}
+                <div class="p-6 bg-slate-950/90 rounded-2xl border border-white/10 space-y-3">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-user-doctor"></i> Actionable Clinical Triage Advice
+                    </h3>
+                    <p class="bg-slate-900 p-4 rounded-xl text-slate-200 text-xs leading-relaxed border border-white/10">
+                        {{ report.get('recommendations') }}
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- ADAPTIVE QUESTIONS & ANSWERS AUDIT LOG -->
+                <div class="p-6 bg-slate-950/90 rounded-2xl border border-white/10 space-y-4">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-question"></i> Adaptive Q&A Audit Log (4 Questions)
+                    </h3>
+                    <div class="space-y-3">
+                        {% for q, a in qa_pairs %}
+                        <div class="p-4 bg-slate-900 rounded-xl border border-white/10 space-y-2">
+                            <p class="text-xs font-semibold text-slate-300">Q{{ loop.index }}: {{ q }}</p>
+                            <p class="text-xs font-semibold text-white pl-3 border-l-2 border-white">A: {{ a }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- ACTION BUTTONS: DOWNLOAD PDF & PROCEED TO APPOINTMENT -->
+                <div class="pt-4 grid grid-cols-1 md:grid-cols-3 gap-4 no-print">
+                    <button type="button" onclick="downloadReportPDF()" class="w-full py-4 bg-white/15 hover:bg-white/25 text-white font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2 border border-white/20">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF
+                    </button>
+
+                    <a href="/appoint-doctor/{{ case_id }}" class="md:col-span-2 w-full py-4 bg-white hover:bg-slate-200 text-slate-950 font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-3 shadow-xl">
+                        <i class="fa-solid fa-calendar-check"></i> Proceed to Doctor Appointment Allocation <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-xs text-slate-500 border-t border-white/10 no-print">
+        © BioLink AYUSH Digital Kiosk Infrastructure
+    </footer>
+
+    <!-- Web Speech API & HTML2PDF Download Script -->
+    <script>
+    function downloadReportPDF() {
+        const element = document.getElementById('printableReport') || document.getElementById('reportContent');
+        const patientName = "{{ citizen.fullname }}".replace(/[^a-zA-Z0-9]/g, "_");
+        const opt = {
+            margin:       [0.4, 0.4, 0.4, 0.4],
+            filename:     `LifeLink_AI_Diagnostic_Report_${patientName}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#050811' },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
+    function startVoiceDictation(targetId) {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            alert("Speech recognition is not supported in this browser. Please type your response.");
+            return;
+        }
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-IN';
+        recognition.interimResults = false;
+        
+        const targetInput = document.getElementById(targetId);
+        const micBtn = document.getElementById('mic_' + targetId);
+        if (micBtn) micBtn.classList.add('animate-pulse', 'text-rose-400');
+        
+        recognition.start();
+        
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            if (targetInput) {
+                targetInput.value = targetInput.value ? targetInput.value + " " + transcript : transcript;
+            }
+            if (micBtn) micBtn.classList.remove('animate-pulse', 'text-rose-400');
+        };
+        
+        recognition.onerror = function(event) {
+            if (micBtn) micBtn.classList.remove('animate-pulse', 'text-rose-400');
+        };
+        
+        recognition.onend = function() {
+            if (micBtn) micBtn.classList.remove('animate-pulse', 'text-rose-400');
+        };
+    }
+    </script>
+</body>
+</html>

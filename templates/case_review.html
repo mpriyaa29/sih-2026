@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYUSH Case Review - Case #{{ case.id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/doctor.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        .review-card {
+            width: 850px;
+            max-width: 90%;
+            background: rgba(15,30,70,0.95);
+            border: 1px solid rgba(59,130,246,0.25);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.4);
+            color: #ffffff;
+            margin: 40px auto;
+        }
+        .badge { display: inline-block; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; font-weight: bold; color: #fff; text-transform: uppercase; }
+        .badge-urgent { background-color: #ef4444; }
+        .badge-review_required { background-color: #f59e0b; color: #fff; }
+        .badge-routine { background-color: #10b981; }
+        .action-bar { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .btn-link { padding: 10px 16px; border-radius: 8px; text-decoration: none; color: #fff; font-size: 0.9em; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background-color: #2563eb; }
+        .btn-info { background-color: #0284c7; }
+        .btn-secondary { background-color: #475569; }
+        .btn-warning { background-color: #d97706; }
+        .btn-success { background-color: #059669; }
+        .box { background: #0b1f4d; border: 1px solid #1e3a8a; border-radius: 10px; padding: 18px; margin-bottom: 20px; color: #ffffff; }
+        .box h3 { color: #3b82f6; margin-top: 0; margin-bottom: 10px; font-size: 18px; }
+        pre { white-space: pre-wrap; font-family: inherit; background: #061538; padding: 12px; border-radius: 8px; border: 1px solid #1e3a8a; color: #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="review-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="color:#3b82f6; margin:0;"><i class="fa-solid fa-notes-medical"></i> AYUSH Case Review #{{ case.id }}</h2>
+            <span class="badge badge-{{ case.priority }}"><i class="fa-solid fa-triangle-exclamation"></i> Triage Priority: {{ case.priority }}</span>
+        </div>
+
+        <p style="margin-top:12px; color:#94a3b8;">
+            <strong>Patient Name:</strong> <span style="color:#fff;">{{ citizen.fullname }}</span> &nbsp;|&nbsp; 
+            <strong>System:</strong> <span style="color:#fff; text-transform:uppercase;">{{ case.ayush_system }}</span> &nbsp;|&nbsp; 
+            <strong>Date:</strong> <span style="color:#fff;">{{ case.created_at }}</span>
+        </p>
+
+        <!-- Quick Action Bar -->
+        <div class="action-bar">
+            <a href="javascript:history.back()" class="btn-link btn-secondary"><i class="fa-solid fa-arrow-left"></i> Back</a>
+            <a href="{{ url_for('medical_timeline', citizen_id=citizen.id) }}" class="btn-link btn-secondary"><i class="fa-solid fa-timeline"></i> Patient Timeline</a>
+            <a href="{{ url_for('ayush_case_fhir', case_id=case.id) }}" target="_blank" class="btn-link btn-info"><i class="fa-solid fa-file-code"></i> FHIR Export (JSON)</a>
+            <a href="{{ url_for('ayush_case_abdm_sync', case_id=case.id) }}" class="btn-link btn-warning"><i class="fa-solid fa-rotate"></i> Sync to ABDM / HIS</a>
+        </div>
+
+        <!-- AI Clinical Summary Section -->
+        <div class="box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3><i class="fa-solid fa-robot"></i> AI Clinical Summary</h3>
+                <form action="{{ url_for('ayush_case_regenerate_summary', case_id=case.id) }}" method="POST" style="margin:0;">
+                    <button type="submit" class="btn-link btn-primary" style="font-size:0.85em; padding:6px 12px;"><i class="fa-solid fa-arrows-rotate"></i> Regenerate Summary</button>
+                </form>
+            </div>
+            <pre>{{ case.ai_summary }}</pre>
+        </div>
+
+        <!-- Diagnostic Mapping -->
+        <div class="box">
+            <h3><i class="fa-solid fa-stethoscope"></i> Standardized Diagnostic Coding</h3>
+            <p style="margin-bottom:6px;"><strong>NAMASTE Codes:</strong> {{ case.namaste_codes }}</p>
+            <p style="margin-bottom:6px;"><strong>ICD-11 TM2 Codes:</strong> {{ case.icd11_tm2_codes }}</p>
+            <p style="margin-bottom:0;"><strong>Referral Suggested:</strong> {{ 'YES (Urgent Attention Required)' if case.referral_flag else 'No' }}</p>
+        </div>
+
+        <!-- Structured Answers -->
+        <div class="box">
+            <h3><i class="fa-solid fa-clipboard-list"></i> Clinical Intake Form Responses</h3>
+            <pre>{{ case.structured_answers }}</pre>
+        </div>
+
+        <!-- Practitioner Verification -->
+        <div class="box" style="background:#064e3b; border-color:#047857;">
+            <h3 style="color:#34d399;"><i class="fa-solid fa-user-check"></i> Practitioner Verification</h3>
+            {% if case.verified %}
+                <p style="color:#6ee7b7; font-weight:bold; margin:0;"><i class="fa-solid fa-check-circle"></i> Verified by {{ case.verified_by }}</p>
+            {% else %}
+                <form method="POST" action="{{ url_for('ayush_case_verify', case_id=case.id) }}">
+                    <p style="margin-bottom:12px; color:#a7f3d0;">Review clinical summary and confirm diagnostic codes above.</p>
+                    <button type="submit" class="btn-link btn-success"><i class="fa-solid fa-signature"></i> Approve & Verify Case Record</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduled Appointments - LifeLink</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        body { background: #060913; color: #f8fafc; font-family: 'Inter', system-ui, sans-serif; }
+        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(59, 130, 246, 0.2); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="glass-panel rounded-2xl p-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent flex items-center gap-3">
+                    <i class="fa-solid fa-calendar-check text-blue-500"></i> Scheduled Appointments Tab
+                </h1>
+                <p class="text-slate-400 text-sm mt-1">Allotted doctor appointments & patient intake schedule</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="/hospital-workspace" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition text-sm flex items-center gap-2 shadow-lg shadow-emerald-900/30">
+                    <i class="fa-solid fa-hospital"></i> Hospital Hub
+                </a>
+                <a href="javascript:history.back()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition text-sm flex items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+
+        <!-- Master Appointments Roster Card -->
+        <div class="glass-panel rounded-2xl p-6 sm:p-8">
+            <h3 class="text-xl font-bold text-blue-400 mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-list-check"></i> Master Appointment Roster
+            </h3>
+            
+            {% if appointments %}
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-900/80 text-xs uppercase text-slate-400 border-b border-slate-800">
+                        <tr>
+                            <th class="py-4 px-4 font-semibold">Appt #</th>
+                            <th class="py-4 px-4 font-semibold">Patient Name</th>
+                            <th class="py-4 px-4 font-semibold">Allotted Doctor</th>
+                            <th class="py-4 px-4 font-semibold">Specialty</th>
+                            <th class="py-4 px-4 font-semibold">Date & Time</th>
+                            <th class="py-4 px-4 font-semibold">Triage Priority</th>
+                            <th class="py-4 px-4 font-semibold">Status</th>
+                            <th class="py-4 px-4 font-semibold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 bg-slate-950/40">
+                        {% for item in appointments %}
+                        <tr class="hover:bg-slate-900/50 transition">
+                            <td class="py-4 px-4 font-mono font-bold text-blue-400">#{{ item.appointment.id }}</td>
+                            <td class="py-4 px-4 font-medium text-slate-100">
+                                {{ item.citizen.fullname }}
+                                <span class="text-xs text-slate-500 block">ID: {{ item.citizen.id }}</span>
+                            </td>
+                            <td class="py-4 px-4 font-semibold text-blue-300">Dr. {{ item.doctor.name }}</td>
+                            <td class="py-4 px-4 text-slate-400">{{ item.doctor.designation }}</td>
+                            <td class="py-4 px-4 text-slate-300">
+                                <span class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-slate-500"></i> {{ item.appointment.appointment_date }}</span>
+                            </td>
+                            <td class="py-4 px-4">
+                                {% if item.case and item.case.priority == 'URGENT' %}
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-950 text-red-400 border border-red-800/60">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse mr-1.5"></span> URGENT
+                                    </span>
+                                {% elif item.case and item.case.priority == 'REVIEW_REQUIRED' %}
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-950 text-amber-400 border border-amber-800/60">
+                                        REVIEW REQUIRED
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-950 text-emerald-400 border border-emerald-800/60">
+                                        ROUTINE
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-4">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-950 text-blue-400 border border-blue-800/60">
+                                    {{ item.appointment.status }}
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-right space-x-2">
+                                {% if item.case %}
+                                    <a href="/ayush/case/{{ item.case.id }}/review" class="px-3 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 hover:text-blue-300 border border-blue-500/30 text-xs font-semibold transition inline-inline">
+                                        Review Case
+                                    </a>
+                                {% endif %}
+                                <a href="/citizen/{{ item.citizen.id }}/timeline" class="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition inline-inline">
+                                    Timeline
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12 border border-dashed border-slate-800 rounded-xl bg-slate-950/30">
+                <i class="fa-solid fa-calendar-xmark text-4xl text-slate-600 mb-3"></i>
+                <p class="text-slate-400 font-medium">No appointments scheduled yet.</p>
+                <p class="text-xs text-slate-500 mt-1">Complete a conscious patient intake flow to allot a doctor and schedule an appointment.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,281 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biometric Emergency Triage - BioLink AYUSH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            background-color: #050811;
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    <meta name="viewport"
-    content="width=device-width, initial-scale=1.0" />
+        .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
 
-    <title>Victim Identification</title>
+        .glass-card {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
 
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
+        .pill-btn-outline {
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
 
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/style.css') }}">
-
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='css/victim.css') }}">
-
+        .pill-btn-outline:hover {
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+    </style>
 </head>
+<body class="min-h-screen flex flex-col justify-between">
 
-<body>
+    <!-- TOP NAVIGATION -->
+    <header class="glass-header sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 text-2xl font-extrabold text-white tracking-tighter">
+                <span class="w-8 h-8 rounded-lg bg-black/40 border border-white/20 flex items-center justify-center text-xs text-white">
+                    <i class="fa-solid fa-dna text-slate-200"></i>
+                </span>
+                <span>BioLink<span class="font-normal text-slate-300 ml-1">AYUSH</span></span>
+            </a>
+            <a href="/hospital-workspace" class="pill-btn-outline text-xs">
+                <i class="fa-solid fa-hospital mr-1"></i> Hospital Hub
+            </a>
+        </div>
+    </header>
 
-    <div class="victim-container">
-
-        <!-- Sidebar -->
-
-        <aside class="sidebar">
-
-            <div class="logo">
-                <h2>LifeLink</h2>
-            </div>
-
-            <ul class="menu">
-
-    <li>
-        <a href="{{ url_for('dashboard') }}">
-            <i class="fa-solid fa-table-columns"></i>
-            Dashboard
-        </a>
-    </li>
-
-    <li class="active">
-        <a href="{{ url_for('victim') }}">
-            <i class="fa-solid fa-user"></i>
-            Victim Identification
-        </a>
-    </li>
-
-    <li>
-    {% if citizen %}
-    <a href="{{ url_for('emergency_access', citizen_id=citizen.id) }}">
-        <i class="fa-solid fa-heart-pulse"></i>
-        Emergency Access
-    </a>
-    {% else %}
-    <a href="#">
-        <i class="fa-solid fa-heart-pulse"></i>
-        Emergency Access
-    </a>
-    {% endif %}
-</li>
-    
-    <li>
-        <a href="{{ url_for('gps') }}">
-            <i class="fa-solid fa-location-dot"></i>
-            GPS Tracking
-        </a>
-    </li>
-
-    <li>
-        <a href="{{ url_for('authority') }}">
-            <i class="fa-solid fa-shield-halved"></i>
-            Authority Monitoring
-        </a>
-    </li>
-
-</ul>
-
-        </aside>
-
-        <!-- Main Content -->
-
-        <main class="main-content">
-
-            <!-- Top Bar -->
-
-            <div class="topbar">
-
-                <h1>Victim Identification</h1>
-
-                <div class="profile">
-
-                    <i class="fa-solid fa-user-shield"></i>
-
-                    <span>Emergency Responder</span>
-
+    <main class="max-w-7xl mx-auto px-6 py-8 w-full my-auto space-y-8">
+        
+        <!-- Header -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-slate-200 text-xs font-semibold mb-2">
+                    <i class="fa-solid fa-truck-medical"></i> EMERGENCY TRIAGE PATHWAY
                 </div>
-
+                <h1 class="text-3xl font-normal tracking-tight text-white flex items-center gap-3">
+                    Unconscious Patient Biometric Search
+                </h1>
+                <p class="text-slate-300 text-xs mt-1 font-light">Biometric facial encodings & R307 hardware fingerprint matching for unidentified victims</p>
             </div>
+            <a href="/hospital-workspace" class="pill-btn-outline text-xs">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Hub Workspace
+            </a>
+        </div>
 
+        {% if error %}
+        <div class="p-4 bg-rose-950/80 border border-rose-600 rounded-2xl text-rose-200 text-xs font-semibold flex items-center gap-3">
+            <i class="fa-solid fa-circle-exclamation text-base text-rose-400"></i>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Biometric Identification Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Face Recognition Section -->
-
-            <section class="scan-section">
-
-                <div class="scan-card">
-
-                    <div class="section-title">
-                        <i class="fa-solid fa-camera"></i>
-                        <h2>AI Face Recognition</h2>
+            <div class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="flex items-center gap-3 text-white font-semibold text-lg mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <h2>Facial Biometric Search</h2>
                     </div>
-
-                    <div class="camera-box">
-
-                        <i class="fa-solid fa-camera camera-icon"></i>
-
-                        <p>Camera Preview</p>
-
+                    
+                    <div class="bg-slate-950/80 rounded-2xl p-8 text-center border border-dashed border-white/20 flex flex-col items-center justify-center min-h-[180px]">
+                        <i class="fa-solid fa-camera-retro text-4xl text-slate-400 mb-3 animate-pulse"></i>
+                        <p class="text-slate-200 font-semibold text-sm">Scan Victim's Facial Features</p>
+                        <p class="text-xs text-slate-400 mt-1">Extract facial encodings & match against database</p>
                     </div>
-
-                    <form
-    id="victimForm"
-    method="POST"
-    enctype="multipart/form-data"
->
-
-    <input
-        type="file"
-        id="faceUpload"
-        name="face_image"
-        accept="image/*"
-        hidden
-    >
-
-    <button
-        type="button"
-        class="scan-btn"
-        onclick="document.getElementById('faceUpload').click()"
-    >
-        Start Face Scan
-    </button>
-
-</form>
-
-                    </div>
-
-                <!-- Fingerprint Verification -->
-
-                <div class="scan-card">
-
-                    <div class="section-title">
-                        <i class="fa-solid fa-fingerprint"></i>
-                        <h2>Fingerprint Verification</h2>
-                    </div>
-
-                    <div class="fingerprint-box">
-
-                        <i class="fa-solid fa-fingerprint fingerprint-icon"></i>
-
-                        <p>R307 Sensor Connected</p>
-
-                    </div>
-
-                    <button
-    class="scan-btn"
-    onclick="window.location.href='/fingerprint-search'"
->
-    Scan Fingerprint
-</button>
-
                 </div>
 
-            </section>
+                <form id="victimForm" action="/victim" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="faceUpload" name="face_image" accept="image/*" class="hidden" onchange="document.getElementById('victimForm').submit()">
+                    <button type="button" class="w-full py-3.5 px-6 rounded-xl bg-white hover:bg-slate-200 text-slate-950 font-semibold transition text-sm flex items-center justify-center gap-2 shadow-xl" onclick="document.getElementById('faceUpload').click()">
+                        <i class="fa-solid fa-camera text-slate-950"></i> Upload & Start Face Scan
+                    </button>
+                </form>
+            </div>
 
-            <!-- Scan Status -->
-
-            <section class="status-section">
-
-                <div class="status-card" id="processingCard" style="display:none;">
-
-                    <div class="status-header">
-
-                        <h2>Identification Status</h2>
-
-                        <span class="status-badge">
-                            Processing
-                        </span>
-
+            <!-- Fingerprint Verification Section -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="flex items-center gap-3 text-white font-semibold text-lg mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+                        <h2>Fingerprint Hardware Sensor</h2>
                     </div>
 
-                    <div class="progress-container">
-
-                        <div class="progress-bar"></div>
-
+                    <div class="bg-slate-950/80 rounded-2xl p-8 text-center border border-dashed border-white/20 flex flex-col items-center justify-center min-h-[180px]">
+                        <i class="fa-solid fa-fingerprint text-4xl text-slate-400 mb-3 animate-pulse"></i>
+                        <p class="text-slate-200 font-semibold text-sm">R307 Hardware Sensor Integration</p>
+                        <p class="text-xs text-slate-400 mt-1">Scan victim fingerprint to retrieve record instantly</p>
                     </div>
+                </div>
 
-                    <p class="status-message">
-                        AI system is analyzing biometric data...
+                <button class="w-full py-3.5 px-6 rounded-xl bg-white/15 hover:bg-white/25 text-white border border-white/20 font-semibold transition text-sm flex items-center justify-center gap-2 shadow" onclick="window.location.href='/fingerprint-search'">
+                    <i class="fa-solid fa-fingerprint"></i> Trigger Fingerprint Hardware Scan
+                </button>
+            </div>
+        </div>
+
+        <!-- UNKNOWN PATIENT FALLBACK CARD -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 border-white/20 bg-slate-950/80">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-slate-300 text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-circle-exclamation"></i> Identification Negative / Unknown Patient
+                    </div>
+                    <h3 class="text-2xl font-normal text-white">Unidentified Victim - Immediate Emergency Care</h3>
+                    <p class="text-slate-300 text-xs leading-relaxed font-light">
+                        Generates a temporary emergency profile (<code class="text-white bg-slate-800 px-1.5 py-0.5 rounded">is_temporary=True</code>). Staff can later link verified ABHA profiles on the Reconciliation screen.
                     </p>
-
                 </div>
+                <form action="/emergency/create-temp-victim" method="POST">
+                    <button type="submit" class="pill-btn-outline text-xs whitespace-nowrap bg-white/10 hover:bg-white/20">
+                        <span>Register Temporary Record & Treat</span>
+                        <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
 
-            </section>
+    </main>
 
-            <!-- Victim Details -->
-
-            <section class="victim-profile">
-
-                {% if citizen %}
-
-                <div class="profile-card">
-
-                    <div class="profile-header">
-
-                        <div class="profile-image">
-
-                            <i class="fa-solid fa-user"></i>
-
-                        </div>
-
-                        <div class="profile-info">
-
-                            <h2>{{ citizen.fullname }}</h2>
-
-                            <p>Victim Identified Successfully</p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="profile-details">
-
-                        <div class="detail-box">
-                            <h4>Age</h4>
-                            <p>{{ citizen.age }}</p>
-                        </div>
-
-                        <div class="detail-box">
-                            <h4>Blood Group</h4>
-                            <p>{{ citizen.blood_group }}</p>
-                        </div>
-
-                        <div class="detail-box">
-                            <h4>Status</h4>
-                            <p>{{ citizen.diseases }}</p>
-                        </div>
-
-                        <div class="detail-box">
-                            <h4>Emergency Contact</h4>
-                            <p>{{ citizen.emergency_contact }}</p>
-                        </div>
-
-                    </div>
-
-                    {% if citizen %}
-
-                    <a href="{{ url_for('emergency_access', citizen_id=citizen.id) }}" class="access-btn">
-                    Enable Emergency Access
-                    </a>
-
-                    {% endif %}
-
-                </div>
-
-                {% endif %}
-
-            </section>
-
-        </main>
-
-    </div>
-
-    <script src="{{ url_for('static', filename='js/victim.js') }}"></script>
-
+    <footer class="py-6 text-center text-xs text-slate-500 border-t border-white/10">
+        © BioLink AYUSH Digital Kiosk Infrastructure
+    </footer>
 </body>
-
 </html>

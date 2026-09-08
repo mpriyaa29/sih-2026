@@ -55,9 +55,9 @@
 
         <a href="/request-access">Request Access</a>
 
-        <a href="/login">
-    Emergency Access
-</a>
+        <a href="/ayush/select-citizen" style="background:#059669;">AYUSH Case Intake</a>
+
+        <a href="/login">Emergency Access</a>
 
         <a href="/updatedrecords">Update Record</a>
 
@@ -68,6 +68,47 @@
         <a href="/logs">Audit Logs</a>
 
     </div>
+
+    {% if cases %}
+    <div style="margin-top:40px; background:#0d214f; padding:25px; border-radius:16px; color:white;">
+        <h3 style="color:#3b82f6; margin-bottom:15px;">Recent AYUSH Cases & Triage Priority</h3>
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:14px;">
+            <thead>
+                <tr style="border-bottom:1px solid #1e3a8a; color:#94a3b8;">
+                    <th style="padding:10px;">Case #</th>
+                    <th style="padding:10px;">Citizen ID</th>
+                    <th style="padding:10px;">System</th>
+                    <th style="padding:10px;">Priority Triage</th>
+                    <th style="padding:10px;">Status</th>
+                    <th style="padding:10px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in cases %}
+                <tr style="border-bottom:1px solid #1e3a8a;">
+                    <td style="padding:10px;">#{{ c.id }}</td>
+                    <td style="padding:10px;">{{ c.citizen_id }}</td>
+                    <td style="padding:10px; text-transform:uppercase;">{{ c.ayush_system }}</td>
+                    <td style="padding:10px;">
+                        {% if c.priority == 'urgent' %}
+                            <span style="background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-weight:bold;">URGENT</span>
+                        {% elif c.priority == 'review_required' %}
+                            <span style="background:#f59e0b; color:white; padding:4px 8px; border-radius:4px; font-weight:bold;">REVIEW REQUIRED</span>
+                        {% else %}
+                            <span style="background:#10b981; color:white; padding:4px 8px; border-radius:4px; font-weight:bold;">ROUTINE</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding:10px;">{{ 'Verified' if c.verified else 'Unverified' }}</td>
+                    <td style="padding:10px;">
+                        <a href="/ayush/case/{{ c.id }}/review" style="color:#60a5fa; text-decoration:underline; margin-right:10px;">Review</a>
+                        <a href="/citizen/{{ c.citizen_id }}/timeline" style="color:#34d399; text-decoration:underline;">Timeline</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 
 </div>
 

@@ -16,40 +16,41 @@ filename='css/doctor.css') }}">
 
 <h2>Patient Record</h2>
 
-<p>
+<p><strong>Name:</strong> {{ citizen.fullname }}</p>
+<p><strong>Blood Group:</strong> {{ citizen.blood_group }}</p>
+<p><strong>Granted Consent Scope:</strong> <span style="text-transform: uppercase; color: #007bff;">{{ scope if scope else 'full_record' }}</span></p>
 
-Name :
-{{ citizen.fullname }}
+<p><a href="{{ url_for('medical_timeline', citizen_id=citizen.id) }}" style="display:inline-block; padding: 6px 12px; background:#007bff; color:#fff; text-decoration:none; border-radius:4px; margin-bottom:15px;">View Medical Timeline</a></p>
 
-</p>
+{% if scope in ['history', 'full_record'] %}
+<h3>Medical History</h3>
+{% if record %}
+<p><strong>Allergies:</strong> {{ record.allergies }}</p>
+<p><strong>Conditions:</strong> {{ record.conditions }}</p>
+<p><strong>Medications:</strong> {{ record.medications }}</p>
+{% else %}
+<p>No medical history recorded.</p>
+{% endif %}
+{% else %}
+<p><em>Medical history restricted by consent scope.</em></p>
+{% endif %}
 
-<p>
+<hr>
 
-Blood Group :
-{{ citizen.blood_group }}
-
-</p>
-
-<p>
-
-Allergies :
-{{ record.allergies }}
-
-</p>
-
-<p>
-
-Conditions :
-{{ record.conditions }}
-
-</p>
-
-<p>
-
-Medications :
-{{ record.medications }}
-
-</p>
+{% if scope in ['prescriptions', 'full_record'] %}
+<h3>Prescriptions</h3>
+{% if prescriptions %}
+<ul>
+{% for p in prescriptions %}
+    <li><strong>Medicine:</strong> {{ p.medicine }} | <strong>Dosage:</strong> {{ p.dosage }} | <strong>Date:</strong> {{ p.created_at }}</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No prescriptions recorded.</p>
+{% endif %}
+{% else %}
+<p><em>Prescriptions restricted by consent scope.</em></p>
+{% endif %}
 
 </div>
 

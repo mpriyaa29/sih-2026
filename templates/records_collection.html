@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conscious Patient Intake & Records Collection - BioLink AYUSH</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            background-color: #050811;
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .pill-btn-outline {
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .pill-btn-outline:hover {
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+
+        /* Voice Waveform Animation */
+        .sound-wave { display: inline-flex; align-items: center; gap: 3px; height: 16px; margin-left: 6px; }
+        .sound-wave span { display: inline-block; width: 3px; height: 100%; background: #ef4444; border-radius: 3px; animation: wave 1.2s infinite ease-in-out; }
+        .sound-wave span:nth-child(2) { animation-delay: 0.2s; }
+        .sound-wave span:nth-child(3) { animation-delay: 0.4s; }
+        .sound-wave span:nth-child(4) { animation-delay: 0.6s; }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- TOP NAVIGATION -->
+    <header class="glass-header sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2 text-2xl font-extrabold text-white tracking-tighter">
+                <span class="w-8 h-8 rounded-lg bg-black/40 border border-white/20 flex items-center justify-center text-xs text-white">
+                    <i class="fa-solid fa-dna text-slate-200"></i>
+                </span>
+                <span>BioLink<span class="font-normal text-slate-300 ml-1">AYUSH</span></span>
+            </a>
+            <a href="/hospital-workspace" class="pill-btn-outline text-xs">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Hospital Hub
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-8 w-full my-auto">
+        <div class="glass-card rounded-3xl p-6 sm:p-10 space-y-8 w-full">
+            
+            <!-- Header -->
+            <div class="space-y-2 border-b border-white/10 pb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-slate-200 text-xs font-semibold">
+                    <i class="fa-solid fa-clipboard-user"></i> Conscious Patient Pathway
+                </div>
+                <h2 class="text-3xl font-normal tracking-tight text-white">Patient Intake & Document OCR Collection</h2>
+                <p class="text-slate-300 text-xs leading-relaxed font-light">Multi-lingual AI speech dictation, AYUSH medical history & prescription OCR scan</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-8">
+                
+                <!-- SECTION 1: PREFERRED LANGUAGE & PATIENT LOOKUP -->
+                <div class="bg-slate-950/80 p-6 rounded-2xl border border-white/10 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                        <i class="fa-solid fa-globe"></i> 1. Preferred Language & Identification
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-slate-300">
+                                Preferred Language
+                            </label>
+                            <select name="preferred_language" id="preferred_language" onchange="updateVoiceLang(this.value)"
+                                class="w-full p-3.5 bg-slate-900 border border-white/20 rounded-xl text-white font-medium focus:outline-none focus:border-white">
+                                <option value="en-IN" selected>English (India)</option>
+                                <option value="hi-IN">Hindi (हिंदी)</option>
+                                <option value="ta-IN">Tamil (தமிழ்)</option>
+                                <option value="te-IN">Telugu (తెలుగు)</option>
+                                <option value="kn-IN">Kannada (கன்னட)</option>
+                                <option value="ml-IN">Malayalam (മലയാളം)</option>
+                                <option value="mr-IN">Marathi (मराठी)</option>
+                                <option value="bn-IN">Bengali (বাংলা)</option>
+                                <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-slate-300">
+                                Existing Citizen Lookup
+                            </label>
+                            <select name="existing_citizen_id" id="existing_citizen_id"
+                                class="w-full p-3.5 bg-slate-900 border border-white/20 rounded-xl text-white font-medium focus:outline-none focus:border-white">
+                                <option value="">-- New Patient Registration --</option>
+                                {% for c in citizens %}
+                                    <option value="{{ c.id }}">{{ c.fullname }} (ID: #{{ c.id }}, Age: {{ c.age }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: BASIC DETAILS -->
+                <div class="bg-slate-950/80 p-6 rounded-2xl border border-white/10 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                        <i class="fa-solid fa-id-card"></i> 2. Basic Patient Details
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="space-y-1.5 sm:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-300">Full Name</label>
+                            <input type="text" name="fullname" placeholder="Patient Full Name"
+                                class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1.5">
+                                <label class="block text-xs font-semibold text-slate-300">Age</label>
+                                <input type="number" name="age" value="32" placeholder="Age"
+                                    class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="block text-xs font-semibold text-slate-300">Gender</label>
+                                <select name="gender" class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-slate-300">ABHA ID / ABHA Number</label>
+                            <input type="text" name="abha_id" placeholder="e.g. 91-8472-1092-3849"
+                                class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm font-mono focus:outline-none focus:border-white">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-xs font-semibold text-slate-300">Contact Number</label>
+                            <input type="text" name="contact_number" placeholder="Mobile phone number"
+                                class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: AI MEDICAL INTERVIEW -->
+                <div class="bg-slate-950/80 p-6 rounded-2xl border border-white/10 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                        <i class="fa-solid fa-user-doctor"></i> 3. Clinical Interview & Symptoms
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Illness / Chief Complaint -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="text-xs font-semibold text-slate-300">Illness / Chief Complaint</label>
+                                <button type="button" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs font-semibold transition-all flex items-center gap-1" id="mic-illness" onclick="toggleVoiceInput('illness', this)">
+                                    <i class="fa-solid fa-microphone"></i> <span>Voice</span>
+                                    <div class="sound-wave hidden" id="wave-illness"><span></span><span></span><span></span><span></span></div>
+                                </button>
+                            </div>
+                            <input type="text" id="illness" name="illness" placeholder="Primary illness or main issue..."
+                                class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white">
+                        </div>
+
+                        <!-- Severity & Duration -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-300">Severity Rating</label>
+                                <select name="severity" class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white">
+                                    <option value="Mild">Mild</option>
+                                    <option value="Moderate" selected>Moderate</option>
+                                    <option value="Severe">Severe</option>
+                                    <option value="Critical">Critical (Red Flag)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-semibold text-slate-300">Duration</label>
+                                <input type="text" name="duration" placeholder="e.g. 3 days, 1 week"
+                                    class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Symptoms Text area -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-stethoscope text-slate-300"></i> Present Symptoms
+                            </label>
+                            <button type="button" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs font-semibold transition-all flex items-center gap-1" id="mic-symptoms" onclick="toggleVoiceInput('symptoms', this)">
+                                <i class="fa-solid fa-microphone"></i> <span>Voice</span>
+                                <div class="sound-wave hidden" id="wave-symptoms"><span></span><span></span><span></span><span></span></div>
+                            </button>
+                        </div>
+                        <textarea id="symptoms" name="symptoms" rows="2" placeholder="Describe symptoms or use voice dictation..." required
+                            class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white"></textarea>
+                    </div>
+
+                    <!-- Past Medical History -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-clock-rotate-left text-slate-300"></i> Past Medical History
+                            </label>
+                            <button type="button" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs font-semibold transition-all flex items-center gap-1" id="mic-history" onclick="toggleVoiceInput('history', this)">
+                                <i class="fa-solid fa-microphone"></i> <span>Voice</span>
+                                <div class="sound-wave hidden" id="wave-history"><span></span><span></span><span></span><span></span></div>
+                            </button>
+                        </div>
+                        <textarea id="history" name="history" rows="2" placeholder="Pre-existing conditions, past surgeries, chronic illnesses..."
+                            class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white"></textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: AYUSH / AYURVEDIC TREATMENT HISTORY -->
+                <div class="bg-slate-950/80 p-6 rounded-2xl border border-white/10 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                        <i class="fa-solid fa-seedling"></i> 4. AYUSH / Herbal Treatment History
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-semibold text-slate-300">Previous AYUSH Therapies & Formulations</label>
+                            <button type="button" class="px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs font-semibold transition-all flex items-center gap-1" id="mic-ayush" onclick="toggleVoiceInput('ayush_history', this)">
+                                <i class="fa-solid fa-microphone"></i> <span>Voice</span>
+                                <div class="sound-wave hidden" id="wave-ayush_history"><span></span><span></span><span></span><span></span></div>
+                            </button>
+                        </div>
+                        <textarea id="ayush_history" name="ayush_history" rows="2" placeholder="Detail any prior Ayurveda, Yoga, Unani, Siddha, or Homeopathy treatments..."
+                            class="w-full p-3 bg-slate-900 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-white"></textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: DOCUMENT UPLOAD & OCR PROCESSING -->
+                <div class="bg-slate-950/80 p-6 rounded-2xl border border-white/10 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                        <i class="fa-solid fa-file-arrow-up"></i> 5. Document Upload & Multimodal Vision OCR
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="space-y-2 p-4 bg-slate-900 rounded-xl border border-white/10">
+                            <label class="block text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-prescription text-slate-300"></i> Upload Prescription
+                            </label>
+                            <input type="file" name="prescription_doc" accept="image/*,.pdf,.txt"
+                                class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20">
+                        </div>
+
+                        <div class="space-y-2 p-4 bg-slate-900 rounded-xl border border-white/10">
+                            <label class="block text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-flask text-slate-300"></i> Upload Lab Reports
+                            </label>
+                            <input type="file" name="lab_report_doc" accept="image/*,.pdf,.txt"
+                                class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20">
+                        </div>
+
+                        <div class="space-y-2 p-4 bg-slate-900 rounded-xl border border-white/10">
+                            <label class="block text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-folder-open text-slate-300"></i> Upload Medical Records
+                            </label>
+                            <input type="file" name="medical_record_doc" accept="image/*,.pdf,.txt"
+                                class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-4 bg-white hover:bg-slate-200 text-slate-950 font-semibold rounded-xl transition-all flex items-center justify-center gap-3 text-sm shadow-xl">
+                    <i class="fa-solid fa-microchip text-slate-950"></i>
+                    <span>Run Vision OCR & Proceed to AI Adaptive Diagnosis</span>
+                </button>
+
+            </form>
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-xs text-slate-500 border-t border-white/10">
+        © BioLink AYUSH Digital Kiosk Infrastructure
+    </footer>
+
+    <script>
+        var activeRecognition = null;
+        var activeBtn = null;
+        var selectedLang = 'en-IN';
+
+        function updateVoiceLang(lang) {
+            selectedLang = lang;
+        }
+
+        function toggleVoiceInput(inputId, btn) {
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Voice recognition is not supported in your browser. Please use Chrome or Edge.");
+                return;
+            }
+
+            var inputElem = document.getElementById(inputId);
+            var waveElem = btn.querySelector('.sound-wave');
+
+            if (activeRecognition && activeBtn === btn) {
+                activeRecognition.stop();
+                return;
+            }
+
+            if (activeRecognition) {
+                activeRecognition.stop();
+            }
+
+            var recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = selectedLang;
+
+            activeRecognition = recognition;
+            activeBtn = btn;
+
+            btn.className = "px-3 py-1 bg-rose-600 text-white border border-rose-400 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 shadow-lg";
+            btn.querySelector("span").textContent = "Listening...";
+            if (waveElem) waveElem.classList.remove("hidden");
+
+            recognition.onresult = function(event) {
+                var transcript = "";
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                inputElem.value = transcript;
+            };
+
+            recognition.onerror = function(event) {
+                stopListening(btn);
+            };
+
+            recognition.onend = function() {
+                stopListening(btn);
+            };
+
+            recognition.start();
+        }
+
+        function stopListening(btn) {
+            if (btn) {
+                btn.className = "px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs font-semibold transition-all flex items-center gap-1";
+                btn.querySelector("span").textContent = "Voice";
+                var waveElem = btn.querySelector('.sound-wave');
+                if (waveElem) waveElem.classList.add("hidden");
+            }
+            activeRecognition = null;
+            activeBtn = null;
+        }
+    </script>
+</body>
+</html>
